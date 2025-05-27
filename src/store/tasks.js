@@ -29,6 +29,30 @@ export default {
       await api.delete("/api/tasks/" + id);
       commit("removeTask", id);
     },
+    async getFile({}, id) {
+      try {
+        const res = await api.get("/api/files/" + id, {
+          responseType: "blob",
+        });
+
+        const contentDisposition = res.headers["content-disposition"];
+        const match =
+          contentDisposition && contentDisposition.match(/filename="?(.+)"?/);
+        const filename = match ? match[1] : "downloaded_file";
+
+        const blob = new Blob([res.data]);
+        const url = URL.createObjectURL(blob);
+
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = filename;
+        a.click();
+
+        URL.revokeObjectURL(url);
+      } catch (err) {
+        console.error("Ошибка при скачивании файла:", err);
+      }
+    },
   },
   mutations: {
     setTasks(state, tasks) {

@@ -3,42 +3,44 @@
     <div class="dots" @click="toggleMenu">
       <EllipsisVertical size="16" />
     </div>
-    <transition name="fade">
-      <div class="menu" v-if="menuOpen">
-        <button
-          class="menu-item"
-          v-if="items.includes('delete')"
-          @click="emit('download')"
-        >
-          <Download size="16" />
-          <p>Скачать</p>
-        </button>
+    <Teleport to="body">
+      <transition name="fade">
+        <div class="menu" v-if="menuOpen" :style="menuStyle" ref="menu">
+          <button
+            class="menu-item"
+            v-if="items.includes('download')"
+            @click="emitAction('download')"
+          >
+            <Download size="16" />
+            <p>Скачать</p>
+          </button>
 
-        <button
-          class="menu-item"
-          v-if="items.includes('update')"
-          @click="emit('update')"
-        >
-          <SquarePen size="16" />
-          <p>Редактировать</p>
-        </button>
+          <button
+            class="menu-item"
+            v-if="items.includes('update')"
+            @click="emitAction('update')"
+          >
+            <SquarePen size="16" />
+            <p>Редактировать</p>
+          </button>
 
-        <button
-          class="menu-item"
-          v-if="items.includes('delete')"
-          @click="emit('delete')"
-          :style="{ color: '#DC2E3A' }"
-        >
-          <Trash2 size="16" />
-          <p>Удалить</p>
-        </button>
-      </div>
-    </transition>
+          <button
+            class="menu-item"
+            v-if="items.includes('delete')"
+            @click="emitAction('delete')"
+            :style="{ color: '#DC2E3A' }"
+          >
+            <Trash2 size="16" />
+            <p>Удалить</p>
+          </button>
+        </div>
+      </transition>
+    </Teleport>
   </button>
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount } from "vue";
+import { ref, onMounted, onBeforeUnmount, nextTick } from "vue";
 import { EllipsisVertical, Trash2, Download, SquarePen } from "lucide-vue-next";
 
 const props = defineProps(["items"]);
@@ -46,11 +48,37 @@ const emit = defineEmits(["delete", "download", "update"]);
 
 const menuOpen = ref(false);
 const container = ref(null);
+const menu = ref(null);
+const menuStyle = ref({});
+
+const toggleMenu = async (e) => {
+  e.stopPropagation();
+  menuOpen.value = !menuOpen.value;
+
+  if (menuOpen.value) {
+    await nextTick(); // wait for DOM update
+    const buttonRect = container.value.getBoundingClientRect();
+
+    const menuRect = menu.value.getBoundingClientRect();
+
+    menuStyle.value = {
+      position: "absolute",
+      top: `${buttonRect.bottom - menuRect.height - buttonRect.height + 8}px`,
+      left: `${buttonRect.right - 6}px`,
+      zIndex: 9999,
+    };
+  }
+};
 
 const handleClickOutside = (event) => {
   if (container.value && !container.value.contains(event.target)) {
     menuOpen.value = false;
   }
+};
+
+const emitAction = (action) => {
+  emit(action);
+  menuOpen.value = false;
 };
 
 onMounted(() => {
@@ -60,11 +88,6 @@ onMounted(() => {
 onBeforeUnmount(() => {
   document.removeEventListener("click", handleClickOutside);
 });
-
-const toggleMenu = (e) => {
-  e.stopPropagation();
-  menuOpen.value = !menuOpen.value;
-};
 </script>
 
 <style scoped>
@@ -76,6 +99,8 @@ const toggleMenu = (e) => {
   background-color: transparent;
   transition: background 0.25s;
   border-radius: 4px;
+  margin-top: -4px;
+  margin-right: -4px;
 }
 
 .container:hover,
@@ -93,16 +118,12 @@ const toggleMenu = (e) => {
 }
 
 .menu {
-  position: absolute;
-  bottom: calc(100% - 4px);
-  left: calc(100% - 4px);
   padding: 4px;
   display: flex;
   flex-direction: column;
   background-color: var(--color-surface);
   border-radius: 6px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-  z-index: 10;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.25);
 }
 
 .menu-item {
@@ -118,7 +139,7 @@ const toggleMenu = (e) => {
 }
 
 .menu-item:hover {
-  background: rgba(0, 0, 0, 0.05);
+  background: rgba(0, 0, 0, 0.1);
 }
 
 /* Fade transition */

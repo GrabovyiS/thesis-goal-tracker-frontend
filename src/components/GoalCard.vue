@@ -1,42 +1,35 @@
 <template>
-  <div class="card" :class="{ selected }" @click="$emit('select')">
-    <h3>{{ goal.title }}</h3>
-    <p>{{ goal.description }}</p>
-    <div class="progress-bar">
-      <div class="progress" :style="{ width: '50%' }"></div>
-    </div>
+  <div
+    class="card-container elevate"
+    :class="{ selected }"
+    @click="$emit('select')"
+  >
+    <header class="card-header">
+      <h3>{{ goal.title }}</h3>
+      <ContextMenu :items="['update', 'delete']" @update="" @delete="" />
+    </header>
+    <p class="card-text">{{ goal.description }}</p>
+    <ProgressBar :percentage="Math.floor(goal.percentage)" />
+    <button
+      v-if="!goal.completed && goal.percentage === 100"
+      class="primary"
+      @click="emit('complete', goal.id)"
+    >
+      Завершить
+    </button>
   </div>
 </template>
 
 <script setup>
-defineProps({
+import ContextMenu from "./ContextMenu.vue";
+import ProgressBar from "./ProgressBar.vue";
+
+const props = defineProps({
   goal: Object,
-  selected: Boolean
-})
-defineEmits(['select'])
+  selected: Boolean,
+});
+
+const emit = defineEmits(["select", "update", "delete", "complete"]);
 </script>
 
-<style scoped>
-.card {
-  background-color: var(--color-surface);
-  border-radius: 8px;
-  padding: 16px;
-  margin-bottom: 12px;
-  border: 1px solid #595E68;
-  cursor: pointer;
-}
-.card.selected {
-  border: 2px solid var(--color-accent-blue);
-}
-.progress-bar {
-  height: 6px;
-  background-color: #22252c;
-  border-radius: 4px;
-  overflow: hidden;
-  margin-top: 8px;
-}
-.progress {
-  background-color: var(--color-accent-orange);
-  height: 100%;
-}
-</style>
+<style scoped></style>
