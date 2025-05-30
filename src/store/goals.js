@@ -1,4 +1,5 @@
 import api from "../api";
+import { generateTempId } from "../utils/tempId";
 
 export default {
   namespaced: true,
@@ -24,7 +25,16 @@ export default {
       state.selectedId = goal.id;
     },
 
+    replaceGoalId(state, { oldId, newId }) {
+      const index = state.items.findIndex((g) => g.id === oldId);
+
+      if (index) {
+        state.items[index].id = newId;
+      }
+    },
+
     updateGoal(state, updated) {
+      console.log(updated);
       const index = state.items.findIndex((g) => g.id === updated.id);
       if (index !== -1) state.items[index] = updated;
     },
@@ -45,22 +55,38 @@ export default {
 
     async createGoal({ commit }) {
       const title = "Название цели";
-      const description = "Описание квеста";
+      const description =
+        "Некоторое описание цели, которое даёт немного дополнительного контекста";
+      const id = generateTempId();
 
-      const res = await api.post("/api/goals", { title, description });
-      commit("addGoal", res.data);
+      commit("addGoal", { title, description, id });
+
+      try {
+        const realGoal = await api.post("/api/goals", {
+          title,
+          description,
+          id,
+        });
+        commit("replaceGoalId", { oldId: id, newId: realGoal.id });
+      } catch (err) {}
     },
 
-    async updateGoal({ commit }, { id, title, description }) {
-      const res = await api.put(`/api/goals/${id}`, { title, description });
-      if (res.data.updated) {
-        commit("updateGoal", { id, title, description });
-      }
+    async updateGoal({ commit }, goal) {
+      commit("updateGoal", goal);
+
+      try {
+        const res = await api.put(`/api/goals/${id}`, { title, description });
+        commit("updateGoal", res);
+      } catch (err) {}
     },
 
     async deleteGoal({ commit }, id) {
-      await api.delete(`/api/goals/${id}`);
       commit("removeGoal", id);
+      try {
+        await api.delete(`/api/goals/${id}`);
+      } catch (err) {
+        console.error("Ошибка при удалении цели:", err);
+      }
     },
   },
 

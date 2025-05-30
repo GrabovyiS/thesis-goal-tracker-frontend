@@ -102,6 +102,12 @@ button.danger {
   transition: transform 0.25s, box-shadow 0.25s;
 }
 
+.message {
+  font-size: 14px;
+  color: var(--color-muted);
+  text-align: center;
+}
+
 .elevate:hover,
 .elevate:active {
   transform: scale(1.01);

@@ -7,25 +7,36 @@
     <input type="text" v-model="goalCopy.description" />
     <h3>История цели</h3>
     <div class="modal-list">
-      <LogCard
-        v-for="log in logs"
-        :log="log"
-        :quest="getQuestById(log.questId)"
-      />
+      <template v-if="logs.length">
+        <LogCard
+          v-for="log in logs"
+          :log="log"
+          :quest="getQuestById(log.questId)"
+        />
+      </template>
+      <template v-else>
+        <p class="message">Пока тут ничего нет.</p>
+        <p class="message">Ведите историю цели заполняя, заметки по квестам.</p>
+      </template>
     </div>
     <h3>Связанные квесты</h3>
     <div class="modal-list">
-      <QuestCard v-for="quest in quests" :quest="quest" />
+      <template v-if="quests.length">
+        <QuestCard v-for="quest in quests" :quest="quest" />
+      </template>
+      <template v-else>
+        <p class="message">
+          Разделите цель на более мелкие элементы, добавляя квесты.
+        </p>
+      </template>
     </div>
     <h3>Прогресс цели</h3>
     <div class="modal-list progress">
-      <ProgressBar :percentage="11" />
+      <ProgressBar :percentage="0" />
     </div>
     <div class="buttons">
       <button class="danger" @click="emit('delete', goal.id)">Удалить</button>
-      <button class="primary" @click="emit('save', goalCopy.value)">
-        Сохранить
-      </button>
+      <button class="primary" @click="saveModal">Сохранить</button>
     </div>
   </Modal>
 </template>
@@ -79,10 +90,10 @@ const getQuestById = (id) => {
   return mockQuest;
 };
 
-const logs = [mockLog, mockLog];
+const logs = [];
 
 // get a list of quests that have the same goalId as the current goal
-const quests = [mockQuest, mockQuest];
+const quests = [];
 
 const mockGoal = {
   id: "asdf",
@@ -101,6 +112,11 @@ watch(
     goalCopy.value = toRawDeep(newGoal);
   }
 );
+
+const saveModal = () => {
+  emit("save", toRawDeep(goalCopy.value));
+  emit("close");
+};
 </script>
 
 <style scoped></style>

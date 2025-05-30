@@ -4,14 +4,7 @@
       <h2>Цели</h2>
     </header>
     <div class="column-container">
-      <PlusButton :wide="true" @click="" />
-      <GoalCard
-        :goal="mockGoal"
-        :selected="mockGoal.id === selectedGoalId"
-        @select="select(mockGoal.id)"
-        @update="openModal(mockGoal)"
-        @delete=""
-      />
+      <PlusButton :wide="true" @click="createGoal" />
       <GoalCard
         v-for="goal in goals"
         :key="goal.id"
@@ -19,8 +12,14 @@
         :selected="goal.id === selectedGoalId"
         @select="select(goal.id)"
         @update="openModal(goal)"
+        @delete="deleteGoal(goal.id)"
       />
-      <GoalModal :isOpen="modalVisible" :goal="modalGoal" @close="closeModal" />
+      <GoalModal
+        :isOpen="modalVisible"
+        :goal="modalGoal"
+        @close="closeModal"
+        @save="updateGoal"
+      />
     </div>
   </div>
 </template>
@@ -35,15 +34,6 @@ import PlusButton from "./PlusButton.vue";
 const store = useStore();
 const goals = computed(() => store.getters["goals/allGoals"]);
 const selectedGoalId = computed(() => store.getters["goals/selectedGoalId"]);
-
-const mockGoal = {
-  id: "asdf",
-  title: "Название цели",
-  description:
-    "Некоторое описание цели с более маленькими буквами которое даёт ненмого контекста",
-  percentage: 100,
-  completed: false,
-};
 
 const modalVisible = ref(false);
 
@@ -60,6 +50,18 @@ const openModal = (goal) => {
 
 const closeModal = () => {
   modalVisible.value = false;
+};
+
+const createGoal = () => {
+  store.dispatch("goals/createGoal");
+};
+
+const updateGoal = (newGoal) => {
+  store.dispatch("goals/updateGoal", newGoal);
+};
+
+const deleteGoal = (id) => {
+  store.dispatch("goals/deleteGoal", id);
 };
 </script>
 

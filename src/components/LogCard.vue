@@ -39,7 +39,6 @@ p.left {
 }
 
 p.quest {
-  text-decoration: underline;
 }
 
 .file-tags {

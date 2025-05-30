@@ -5,9 +5,14 @@
       :value="questCopy.title"
     />
     <input type="text" v-model="questCopy.description" />
-    <h3>История цели</h3>
+    <h3>Заметки по квесту</h3>
     <div class="modal-list">
-      <LogCard v-for="log in logs" :log="log" :quest="questCopy" />
+      <LogCard
+        v-for="log in logs"
+        :log="log"
+        :quest="questCopy"
+        @delete="deleteLog"
+      />
     </div>
     <h3>Связанные задачи</h3>
     <div class="modal-list">
