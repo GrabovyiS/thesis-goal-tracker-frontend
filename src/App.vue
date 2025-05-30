@@ -33,6 +33,7 @@ body {
   --color-hover-grey: #4b505a99;
   --color-muted: #d9d9d9;
   --color-border: #595e68;
+  --color-border-focus: #9da0a6;
 }
 
 h2 {
@@ -79,6 +80,21 @@ button.danger {
 
   &:hover {
     background-color: #ca1b1e;
+  }
+}
+
+.icon-button {
+  background: none;
+  border: none;
+  color: var(--color-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  border-radius: 4px;
+  transition: background-color 0.25s;
+
+  &:hover {
+    background-color: #d9d9d930;
   }
 }
 
@@ -151,9 +167,15 @@ input {
   font-size: 12px;
   border: 1px solid var(--color-border);
   border-radius: 4px;
+  transition: all 0.25s;
 
   &::placeholder {
     color: #cecece;
+  }
+
+  &:focus {
+    outline: none;
+    border-color: var(--color-border-focus);
   }
 }
 
@@ -179,11 +201,15 @@ input {
   background: var(--color-bg-lighter);
   padding: 16px;
   border-radius: 8px;
-  max-width: 640px;
-  height: calc(100vh - 40px);
+  width: 640px;
+  max-height: calc(100vh - 40px);
   display: flex;
   flex-direction: column;
   gap: 16px;
+
+  &.second-modal-container {
+    width: 480px;
+  }
 
   .buttons {
     display: flex;

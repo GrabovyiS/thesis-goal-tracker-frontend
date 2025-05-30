@@ -1,11 +1,14 @@
 <template>
-  <div class="editable-header">
+  <div
+    class="editable-header"
+    :style="isEditing ? { padding: '0px' } : { padding: '4px' }"
+  >
     <template v-if="isEditing">
       <input
         ref="inputRef"
         v-model="draft"
         @keyup.enter="save"
-        @blur="save"
+        @keyup.escape="cancel"
         class="editable-input"
       />
       <button class="icon-button" @click="cancel">
@@ -13,7 +16,7 @@
       </button>
     </template>
     <template v-else>
-      <h2>{{ modelValue }}</h2>
+      <h2>{{ value }}</h2>
       <button class="icon-button" @click="startEditing">
         <SquarePen size="20" />
       </button>
@@ -26,16 +29,16 @@ import { ref, defineProps, defineEmits, nextTick } from "vue";
 import { SquarePen, X } from "lucide-vue-next";
 
 const props = defineProps({
-  modelValue: String,
+  value: String,
 });
-const emit = defineEmits(["update"]);
+const emit = defineEmits(["update", "cancel"]);
 
 const isEditing = ref(false);
 const draft = ref("");
 const inputRef = ref(null);
 
 function startEditing() {
-  draft.value = props.modelValue;
+  draft.value = props.value;
   isEditing.value = true;
 
   nextTick(() => {
@@ -44,7 +47,7 @@ function startEditing() {
 }
 
 function save() {
-  if (draft.value !== props.modelValue) {
+  if (draft.value !== props.value) {
     emit("update", draft.value);
   }
   isEditing.value = false;
@@ -60,6 +63,8 @@ function cancel() {
   display: flex;
   align-items: center;
   gap: 8px;
+  margin-top: -4px;
+  margin-bottom: -4px;
 }
 
 .editable-input {

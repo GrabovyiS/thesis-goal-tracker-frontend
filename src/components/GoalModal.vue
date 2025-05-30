@@ -2,7 +2,7 @@
   <Modal :isOpen="isOpen" modalType="Цель" @close="emit('close')">
     <EditableHeader
       @update="(newTitle) => (goalCopy.title = newTitle)"
-      v-model="goalCopy.title"
+      :value="goalCopy.title"
     />
     <input type="text" v-model="goalCopy.description" />
     <h3>История цели</h3>
@@ -22,9 +22,7 @@
       <ProgressBar :percentage="11" />
     </div>
     <div class="buttons">
-      <button class="danger" @click="emit('delete', goal.id)">
-        Удалить цель
-      </button>
+      <button class="danger" @click="emit('delete', goal.id)">Удалить</button>
       <button class="primary" @click="emit('save', goalCopy.value)">
         Сохранить
       </button>
@@ -103,19 +101,6 @@ watch(
     goalCopy.value = toRawDeep(newGoal);
   }
 );
-
-const close = () => emit("close");
-
-const save = async () => {
-  if (!title.value.trim()) return;
-
-  await store.dispatch("goals/createGoal", {
-    title: title.value,
-    description: description.value,
-  });
-
-  close();
-};
 </script>
 
 <style scoped></style>

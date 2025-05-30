@@ -2,7 +2,16 @@
   <div class="card-container elevate">
     <header class="card-header">
       <h3>{{ task.title }}</h3>
-      <ContextMenu :items="['update', 'delete']" @update="" @delete="" />
+      <ContextMenu
+        :items="['update', 'delete']"
+        @update="
+          () => {
+            console.log('emit update');
+            emit('update');
+          }
+        "
+        @delete="emit('delete')"
+      />
     </header>
     <p class="card-text">{{ task.description }}</p>
     <div class="interactive-container">
@@ -19,7 +28,7 @@
       </template>
 
       <div class="file-tags">
-        <FileTag v-for="file in task.files" :file="file" />
+        <FileTag v-for="file in task.files" :file="file" :downloadable="true" />
       </div>
     </div>
 
@@ -36,6 +45,7 @@
 <script setup>
 import FileTag from "./FileTag.vue";
 import ProgressCounter from "./ProgressCounter.vue";
+import ContextMenu from "./ContextMenu.vue";
 import Checkbox from "./Checkbox.vue";
 
 defineProps({
@@ -43,7 +53,13 @@ defineProps({
   removeTooltip: String,
 });
 
-const emit = defineEmits(["edit", "toggle", "increase", "decrease", "remove"]);
+const emit = defineEmits([
+  "update",
+  "toggle",
+  "increase",
+  "decrease",
+  "delete",
+]);
 </script>
 
 <style scoped>

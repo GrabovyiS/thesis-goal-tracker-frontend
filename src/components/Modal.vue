@@ -1,7 +1,10 @@
 <template>
   <transition name="fade">
     <div v-if="isOpen" class="modal-backdrop" @click.self="close">
-      <div class="modal-container">
+      <div
+        :class="secondModal ? 'second-modal-container' : ''"
+        class="modal-container"
+      >
         <header>
           <p class="type">{{ modalType }}</p>
           <button class="close-button" @click="close">
@@ -20,6 +23,7 @@ import { X } from "lucide-vue-next";
 
 const props = defineProps({
   modalType: String,
+  secondModal: Boolean,
   isOpen: Boolean,
 });
 

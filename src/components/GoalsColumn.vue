@@ -4,12 +4,12 @@
       <h2>Цели</h2>
     </header>
     <div class="column-container">
-      <PlusButton :wide="true" @click="openModal" />
+      <PlusButton :wide="true" @click="" />
       <GoalCard
         :goal="mockGoal"
         :selected="mockGoal.id === selectedGoalId"
         @select="select(mockGoal.id)"
-        @update=""
+        @update="openModal(mockGoal)"
         @delete=""
       />
       <GoalCard
@@ -18,8 +18,9 @@
         :goal="goal"
         :selected="goal.id === selectedGoalId"
         @select="select(goal.id)"
+        @update="openModal(goal)"
       />
-      <GoalModal :isOpen="modalVisible" @close="closeModal" />
+      <GoalModal :isOpen="modalVisible" :goal="modalGoal" @close="closeModal" />
     </div>
   </div>
 </template>
@@ -50,7 +51,10 @@ function select(id) {
   store.commit("goals/setSelectedGoalId", id);
 }
 
-const openModal = () => {
+const modalGoal = ref(null);
+
+const openModal = (goal) => {
+  modalGoal.value = goal;
   modalVisible.value = true;
 };
 

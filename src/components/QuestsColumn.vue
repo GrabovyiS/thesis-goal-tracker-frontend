@@ -9,7 +9,7 @@
         :quest="mockQuest"
         :selected="mockQuest.id === selectedQuestId"
         @select="select(mockQuest.id)"
-        @edit="openModal(mockQuest)"
+        @update="openModal(mockQuest)"
         @delete=""
       />
       <QuestCard
@@ -23,9 +23,9 @@
     </div>
   </div>
   <QuestModal
-    v-if="modalVisible"
-    :goalId="goalId"
-    :quest="selectedQuest"
+    :isOpen="modalVisible"
+    :quest="modalQuest"
+    @save=""
     @close="modalVisible = false"
   />
 </template>
@@ -60,10 +60,13 @@ function select(id) {
   store.commit("quests/setSelectedQuestId", id);
 }
 
-function openModal(quest) {
-  selectedQuest.value = quest;
+const modalQuest = ref(null);
+
+const openModal = (quest) => {
+  console.log("naah");
   modalVisible.value = true;
-}
+  modalQuest.value = quest;
+};
 </script>
 
 <style scoped></style>

@@ -6,7 +6,11 @@
   >
     <header class="card-header">
       <h3>{{ goal.title }}</h3>
-      <ContextMenu :items="['update', 'delete']" @update="" @delete="" />
+      <ContextMenu
+        :items="['update', 'delete']"
+        @update="emit('update')"
+        @delete="emit('delete')"
+      />
     </header>
     <p class="card-text">{{ goal.description }}</p>
     <ProgressBar :percentage="Math.floor(goal.percentage)" />

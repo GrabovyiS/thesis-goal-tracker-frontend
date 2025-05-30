@@ -6,7 +6,11 @@
   >
     <header class="card-header">
       <h3>{{ quest.title }}</h3>
-      <ContextMenu :items="['update', 'delete']" @update="" @delete="" />
+      <ContextMenu
+        :items="['update', 'delete']"
+        @update="emit('update')"
+        @delete="emit('delete')"
+      />
     </header>
     <p class="card-text">{{ quest.description }}</p>
     <ProgressBar :percentage="quest.percentage" />

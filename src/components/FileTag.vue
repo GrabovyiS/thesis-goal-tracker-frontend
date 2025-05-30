@@ -1,24 +1,36 @@
 <template>
-  <button @click="downloadFile">
+  <button
+    class="tag"
+    :class="downloadable ? 'clickable' : ''"
+    @click="downloadFile"
+  >
     <Paperclip :size="16" />
     <p>{{ file.name }}</p>
+    <button v-if="deletable" class="icon-button" @click="emit('delete', file)">
+      <X size="16" />
+    </button>
   </button>
 </template>
 
 <script setup>
 import { useStore } from "vuex";
-import { Paperclip } from "lucide-vue-next";
+import { Paperclip, X } from "lucide-vue-next";
 
-const props = defineProps(["file"]);
+const props = defineProps(["file", "downloadable", "deletable"]);
+const emit = defineEmits(["delete"]);
 const store = useStore();
 
 const downloadFile = () => {
+  if (!props.downloadable) {
+    return;
+  }
+
   store.dispatch("tasks/getFile", file.id);
 };
 </script>
 
 <style scoped>
-button {
+.tag {
   align-self: center;
   color: var(--color-muted);
   border-radius: 4px;
@@ -29,11 +41,11 @@ button {
   justify-content: center;
   gap: 4px;
   background-color: var(--color-accent-grey);
-  cursor: pointer;
   transition: background-color 0.25s;
   font-size: 10px;
 
-  &:hover {
+  &.clickable:hover {
+    cursor: pointer;
     background-color: #666b73;
   }
 }

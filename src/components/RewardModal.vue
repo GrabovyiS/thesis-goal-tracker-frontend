@@ -1,5 +1,10 @@
 <template>
-  <Modal :isOpen="isOpen" modalType="Задача" @close="emit('close')">
+  <Modal
+    :isOpen="isOpen"
+    :secondModal="true"
+    modalType="Награда"
+    @close="emit('close')"
+  >
     <EditableHeader
       @update="(newTitle) => (taskCopy.title = newTitle)"
       :value="taskCopy.title"

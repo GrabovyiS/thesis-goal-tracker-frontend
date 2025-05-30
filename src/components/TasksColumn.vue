@@ -5,8 +5,8 @@
     </div>
     <div class="column-container">
       <PlusButton @click="" />
-      <TaskCard :task="mockTask1" />
-      <TaskCard :task="mockTask2" />
+      <TaskCard :task="mockTask1" @update="openModal(mockTask1)" />
+      <TaskCard :task="mockTask2" @update="openModal(element)" />
       <draggable :list="tasks" group="tasks" item-key="id" :sort="false">
         <template #item="{ element }">
           <TaskCard
@@ -14,19 +14,14 @@
             @toggle="toggle(element)"
             @increase="increase(element)"
             @decrease="decrease(element)"
-            @edit="openModal(element)"
+            @update="openModal(element)"
             @remove="removeTask(element)"
           />
         </template>
       </draggable>
     </div>
   </div>
-  <TaskModal
-    v-if="modalVisible"
-    :task="selectedTask"
-    :questId="questId"
-    @close="closeModal"
-  />
+  <TaskModal :isOpen="modalVisible" :task="modalTask" @close="closeModal" />
 </template>
 
 <script setup>
@@ -91,10 +86,10 @@ const mockTask2 = {
 };
 
 const modalVisible = ref(false);
-const selectedTask = ref(null);
+const modalTask = ref(null);
 
 function openModal(task) {
-  selectedTask.value = task;
+  modalTask.value = task;
   modalVisible.value = true;
 }
 
