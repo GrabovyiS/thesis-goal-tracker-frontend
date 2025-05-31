@@ -7,28 +7,42 @@
     <input type="text" v-model="questCopy.description" />
     <h3>Заметки по квесту</h3>
     <div class="modal-list">
-      <LogCard
-        v-for="log in logs"
-        :log="log"
-        :quest="questCopy"
-        @delete="deleteLog"
-      />
+      <template v-if="logs.length">
+        <PlusButton @click="" />
+        <LogCard
+          v-for="log in logs"
+          :log="log"
+          :quest="questCopy"
+          @delete="deleteLog"
+        />
+      </template>
+      <template v-else>
+        <p class="message">
+          Ведите историю выполнения квеста, добавляя заметки.
+        </p>
+        <PlusButton @click="" />
+      </template>
     </div>
     <h3>Связанные задачи</h3>
     <div class="modal-list">
-      <TaskCard v-for="task in tasks" :task="task" />
+      <template v-if="tasks.length">
+        <TaskCard v-for="task in tasks" :task="task" />
+      </template>
+      <template v-else>
+        <p class="message">
+          Разделите квест на более мелкие элементы, добавляя задачи.
+        </p>
+      </template>
     </div>
     <h3>Прогресс квеста</h3>
     <div class="modal-list progress">
-      <ProgressBar :percentage="11" />
+      <ProgressBar :percentage="0" />
     </div>
     <div class="buttons">
       <button class="danger" @click="emit('delete', quest.id)">
         Удалить квест
       </button>
-      <button class="primary" @click="emit('save', questCopy.value)">
-        Сохранить
-      </button>
+      <button class="primary" @click="saveModal">Сохранить</button>
     </div>
   </Modal>
 </template>
@@ -42,63 +56,16 @@ import { toRawDeep } from "../utils/toRawDeep";
 import LogCard from "./LogCard.vue";
 import ProgressBar from "./ProgressBar.vue";
 import TaskCard from "./TaskCard.vue";
+import PlusButton from "./PlusButton.vue";
 
 const emit = defineEmits(["close", "delete", "save"]);
 const store = useStore();
 
 const props = defineProps(["quest", "isOpen"]);
 
-const mockFile = {
-  id: "...",
-  name: "example.pdf",
-  mimeType: "application/pdf",
-  taskId: "asss",
-  createdAt: "...",
-  updatedAt: "...",
-};
+const logs = [];
 
-const mockLog = {
-  id: "dszxcv",
-  questId: "asdfdf",
-  title: "Название лога",
-  description:
-    "Текст заметки текст заметки текст заметки текст заметки текст заметки текст заметки текст заметки текстзаметки текстзаметки текстзаметки текст",
-  files: [mockFile],
-  updatedAt: "2025-05-23",
-};
-
-const mockQuest = {
-  id: "asdf",
-  dueDate: "2025-05-23T17:42:15.123Z",
-  title: "Название квеста",
-  description:
-    "Короткое описание квеста коиорое дает некоторое количество необязательного контекста",
-  percentage: 90,
-  goalId: "asdf",
-};
-
-const logs = [mockLog, mockLog];
-
-const mockTask = {
-  id: "asdfs",
-  title: "Название задачи",
-  description:
-    "Краткое описание задачи с несколькими словами и маленькими буквами",
-  type: "checkbox",
-  done: true,
-  files: [
-    {
-      id: "...",
-      name: "example.pdf",
-      mimeType: "application/pdf",
-      taskId: "asss",
-      createdAt: "...",
-      updatedAt: "...",
-    },
-  ],
-};
-
-const tasks = [mockTask, mockTask];
+const tasks = [];
 
 const mockReward = {
   id: "adfszxvc",
@@ -110,6 +77,11 @@ const mockReward = {
 const questCopy = ref(null);
 
 const rewards = [mockReward, mockReward];
+
+const saveModal = () => {
+  emit("save", toRawDeep(questCopy.value));
+  emit("close");
+};
 
 watch(
   () => props.quest,

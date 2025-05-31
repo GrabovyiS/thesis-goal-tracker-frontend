@@ -10,6 +10,10 @@ const props = defineProps(["wide"]);
 </script>
 
 <style scoped>
+.modal-list button {
+  border: 1px solid var(--color-border);
+}
+
 button {
   cursor: pointer;
   color: var(--color-muted);

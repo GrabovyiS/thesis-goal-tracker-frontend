@@ -1,4 +1,5 @@
 import api from "../api";
+import { generateTempId } from "../utils/tempId";
 
 export default {
   namespaced: true,
@@ -13,19 +14,31 @@ export default {
         state.selectedId = quests[0].id;
       }
     },
+
     setSelectedQuestId(state, id) {
       state.selectedId = id;
     },
+
     addQuest(state, quest) {
       state.items.unshift(quest);
       state.selectedId = quest.id;
     },
+
+    replaceQuestId(state, { oldId, newId }) {
+      const index = state.items.findIndex((q) => q.id === oldId);
+
+      if (index) {
+        state.items[index].id = newId;
+      }
+    },
+
     removeQuest(state, id) {
       state.items = state.items.filter((q) => q.id !== id);
       if (state.selectedId === id) {
         state.selectedId = state.items[0]?.id || null;
       }
     },
+
     updateQuest(state, updated) {
       const index = state.items.findIndex((q) => q.id === updated.id);
       if (index !== -1) state.items[index] = updated;
@@ -37,33 +50,49 @@ export default {
       const res = await api.get("/api/quests");
       commit("setQuests", res.data);
     },
-    async createQuest({ commit }, { goalId }) {
+    async createQuest({ commit }, goalId) {
       const title = "Название квеста";
       const description = "Дополнительное описание квеста";
-      deadline = null;
-      const res = await api.post("/api/quests", {
-        goalId,
-        title,
-        description,
-        deadline,
-      });
-      commit("addQuest", res.data);
+      const id = generateTempId();
+      const deadline = null;
+
+      commit("addQuest", { id, title, goalId, description, deadline });
+
+      try {
+        const res = await api.post("/api/quests", {
+          goalId,
+          title,
+          description,
+          deadline,
+        });
+
+        commit("replaceQuestId", { oldId: id, newId: res.data.id });
+      } catch (err) {}
     },
 
     async deleteQuest({ commit }, id) {
-      await api.delete(`/api/quests/${id}`);
+      console.log("deleting", id);
       commit("removeQuest", id);
+
+      try {
+        await api.delete(`/api/quests/${id}`);
+      } catch (err) {
+        console.error(err);
+      }
     },
 
-    async updateQuest({ commit }, { id, title, description, deadline }) {
-      const res = await api.put(`/api/quests/${id}`, {
-        title,
-        description,
-        deadline,
-      });
-      if (res.data.updated) {
-        commit("updateQuest", { id, title, description, deadline });
-      }
+    async updateQuest({ commit }, newQuest) {
+      const { id, title, description, deadline, goalId } = newQuest;
+      commit("updateQuest", newQuest);
+
+      try {
+        const res = await api.put(`/api/quests/${id}`, {
+          title,
+          description,
+          deadline,
+          goalId,
+        });
+      } catch (err) {}
     },
   },
 

@@ -62,27 +62,12 @@ const selectedQuestId = computed(() => store.getters["quests/selectedQuestId"]);
 
 onMounted(async () => {
   await store.dispatch("goals/fetchGoals");
-  if (selectedGoalId.value) {
-    await store.dispatch("quests/fetchQuests", selectedGoalId.value);
-  }
+
+  await store.dispatch("quests/fetchQuests");
+  await store.dispatch("tasks/fetchTasks");
   console.log(store.getters["quests/allQuests"]);
   console.log(store.getters["goals/allGoals"]);
-  if (selectedQuestId.value) {
-    await store.dispatch("tasks/fetchTasks", selectedQuestId.value);
-  }
-  store.dispatch("activeTasks/fetchActiveTasks");
-});
-
-watch(selectedGoalId, (newId) => {
-  if (newId) {
-    store.dispatch("quests/fetchQuests", newId);
-  }
-});
-
-watch(selectedQuestId, (newId) => {
-  if (newId) {
-    store.dispatch("tasks/fetchTasks", newId);
-  }
+  await store.dispatch("activeTasks/fetchActiveTasks");
 });
 </script>
 

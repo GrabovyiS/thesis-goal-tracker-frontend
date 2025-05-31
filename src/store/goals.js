@@ -62,12 +62,12 @@ export default {
       commit("addGoal", { title, description, id });
 
       try {
-        const realGoal = await api.post("/api/goals", {
+        const res = await api.post("/api/goals", {
           title,
           description,
           id,
         });
-        commit("replaceGoalId", { oldId: id, newId: realGoal.id });
+        commit("replaceGoalId", { oldId: id, newId: res.data.id });
       } catch (err) {}
     },
 

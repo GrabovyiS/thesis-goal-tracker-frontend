@@ -4,28 +4,22 @@
       <h2>Квесты</h2>
     </div>
     <div class="column-container">
-      <PlusButton @click="" :wide="true" />
-      <QuestCard
-        :quest="mockQuest"
-        :selected="mockQuest.id === selectedQuestId"
-        @select="select(mockQuest.id)"
-        @update="openModal(mockQuest)"
-        @delete=""
-      />
+      <PlusButton @click="createQuest" :wide="true" />
       <QuestCard
         v-for="quest in quests"
         :key="quest.id"
         :quest="quest"
         :selected="quest.id === selectedQuestId"
         @select="select(quest.id)"
-        @edit="openModal(quest)"
+        @update="openModal(quest)"
+        @delete="deleteQuest"
       />
     </div>
   </div>
   <QuestModal
     :isOpen="modalVisible"
     :quest="modalQuest"
-    @save=""
+    @save="updateQuest"
     @close="modalVisible = false"
   />
 </template>
@@ -63,9 +57,20 @@ function select(id) {
 const modalQuest = ref(null);
 
 const openModal = (quest) => {
-  console.log("naah");
   modalVisible.value = true;
   modalQuest.value = quest;
+};
+
+const createQuest = () => {
+  store.dispatch("quests/createQuest", goalId.value);
+};
+
+const deleteQuest = (id) => {
+  store.dispatch("quests/deleteQuest", id);
+};
+
+const updateQuest = (newQuest) => {
+  store.dispatch("quests/updateQuest", newQuest);
 };
 </script>
 

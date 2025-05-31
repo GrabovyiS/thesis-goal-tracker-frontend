@@ -9,16 +9,17 @@
       <ContextMenu
         :items="['update', 'delete']"
         @update="emit('update')"
-        @delete="emit('delete')"
+        @delete="emit('delete', quest.id)"
       />
     </header>
     <p class="card-text">{{ quest.description }}</p>
     <ProgressBar :percentage="quest.percentage" />
     <p
       class="due-date"
-      :class="hasDueDatePassed(quest.dueDate) ? 'overdue' : ''"
+      :class="hasDueDatePassed(quest.deadline) ? 'overdue' : ''"
+      v-if="quest.deadline"
     >
-      До {{ formatDateToDDMM(quest.dueDate) }}
+      До {{ formatDateToDDMM(quest.deadline) }}
     </p>
     <button
       v-if="!quest.completed && quest.percentage === 100"
