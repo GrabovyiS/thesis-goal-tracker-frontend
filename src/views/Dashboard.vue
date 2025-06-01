@@ -64,6 +64,7 @@ onMounted(async () => {
   await store.dispatch("goals/fetchGoals");
   await store.dispatch("quests/fetchQuests");
   await store.dispatch("tasks/fetchTasks");
+  await store.dispatch("rewards/fetchRewards");
   await store.dispatch("activeTasks/fetchActiveTasks");
 });
 </script>

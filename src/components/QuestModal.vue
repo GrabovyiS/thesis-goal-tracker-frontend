@@ -34,9 +34,30 @@
         </p>
       </template>
     </div>
+    <h3>Награды</h3>
+    <div class="modal-list">
+      <template v-if="rewards.length">
+        <PlusButton @click="createReward" />
+        <div class="rewards">
+          <RewardCard
+            v-for="reward in rewards"
+            :reward="reward"
+            @update="openRewardModal(reward)"
+            @delete="deleteReward(reward.id)"
+            @toggle="toggleReward(reward)"
+          />
+        </div>
+      </template>
+      <template v-else>
+        <p class="message">
+          Добавьте награды, показывающие ожидаемый результат выполнения квеста.
+        </p>
+        <PlusButton @click="createReward" />
+      </template>
+    </div>
     <h3>Прогресс квеста</h3>
     <div class="modal-list progress">
-      <ProgressBar :percentage="0" />
+      <ProgressBar :percentage="progress" />
     </div>
     <div class="buttons">
       <button class="danger" @click="emit('delete', quest.id)">
@@ -44,11 +65,17 @@
       </button>
       <button class="primary" @click="saveModal">Сохранить</button>
     </div>
+    <RewardModal
+      :reward="modalReward"
+      :isOpen="rewardModalOpen"
+      @save="updateReward"
+      @close="rewardModalOpen = false"
+    />
   </Modal>
 </template>
 
 <script setup>
-import { onMounted, ref, watch } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import { useStore } from "vuex";
 import Modal from "./Modal.vue";
 import EditableHeader from "./EditableHeader.vue";
@@ -57,6 +84,9 @@ import LogCard from "./LogCard.vue";
 import ProgressBar from "./ProgressBar.vue";
 import TaskCard from "./TaskCard.vue";
 import PlusButton from "./PlusButton.vue";
+import RewardCard from "./RewardCard.vue";
+import RewardModal from "./RewardModal.vue";
+import { getProgressFromTasks } from "../utils/progress";
 
 const emit = defineEmits(["close", "delete", "save"]);
 const store = useStore();
@@ -65,18 +95,42 @@ const props = defineProps(["quest", "isOpen"]);
 
 const logs = [];
 
-const tasks = [];
+const tasks = computed(() =>
+  store.getters["tasks/tasksByQuest"](props.quest.id)
+);
 
-const mockReward = {
-  id: "adfszxvc",
-  emoji: "🥶",
-  title: "Some Reward Title",
-  collected: false,
+const rewardModalOpen = ref(false);
+const modalReward = ref(null);
+
+const openRewardModal = (reward) => {
+  modalReward.value = reward;
+  rewardModalOpen.value = true;
+};
+
+const createReward = () => {
+  store.dispatch("rewards/createReward", props.quest.id);
+};
+
+const updateReward = (newReward) => {
+  store.dispatch("rewards/updateReward", newReward);
+};
+
+const toggleReward = (reward) => {
+  reward.collected = !reward.collected;
+  store.dispatch("rewards/updateReward", toRawDeep(reward));
+};
+
+const deleteReward = (id) => {
+  store.dispatch("rewards/deleteReward", id);
 };
 
 const questCopy = ref(null);
 
-const rewards = [mockReward, mockReward];
+const rewards = computed(() =>
+  store.getters["rewards/rewardsByQuest"](props.quest.id)
+);
+
+const progress = computed(() => getProgressFromTasks(tasks.value));
 
 const saveModal = () => {
   emit("save", toRawDeep(questCopy.value));

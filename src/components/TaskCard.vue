@@ -15,7 +15,7 @@
       </template>
       <template v-else-if="task.type === 'progress'">
         <ProgressCounter
-          :value="task.value"
+          :value="Number(task.value)"
           :max="task.max"
           @minus="emit('decrease')"
           @plus="emit('increase')"

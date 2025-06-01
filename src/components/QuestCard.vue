@@ -13,7 +13,7 @@
       />
     </header>
     <p class="card-text">{{ quest.description }}</p>
-    <ProgressBar :percentage="quest.percentage" />
+    <ProgressBar :percentage="progress" />
     <p
       class="due-date"
       :class="hasDueDatePassed(quest.deadline) ? 'overdue' : ''"
@@ -22,7 +22,7 @@
       До {{ formatDateToDDMM(quest.deadline) }}
     </p>
     <button
-      v-if="!quest.completed && quest.percentage === 100"
+      v-if="!quest.completed && progress === 100"
       class="primary"
       @click="emit('complete', quest.id)"
     >
@@ -34,7 +34,10 @@
 <script setup>
 import ContextMenu from "./ContextMenu.vue";
 import ProgressBar from "./ProgressBar.vue";
+import { computed } from "vue";
+import { useStore } from "vuex";
 import { formatDateToDDMM } from "../utils/dates.js";
+import { getProgressFromTasks } from "../utils/progress.js";
 
 const props = defineProps({
   quest: Object,
@@ -42,6 +45,7 @@ const props = defineProps({
 });
 
 const emit = defineEmits(["select", "update", "delete", "complete"]);
+const store = useStore();
 
 const hasDueDatePassed = (date) => {
   const inputDate = new Date(date);
@@ -52,6 +56,12 @@ const hasDueDatePassed = (date) => {
 
   return inputDate < today;
 };
+
+const tasks = computed(() =>
+  store.getters["tasks/tasksByQuest"](props.quest.id)
+);
+
+const progress = computed(() => getProgressFromTasks(tasks.value));
 </script>
 
 <style scoped>

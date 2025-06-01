@@ -1,5 +1,5 @@
 <template>
-  <div class="card-container">
+  <div class="card-container elevate">
     <header>
       <ContextMenu
         :items="['update', 'delete']"
@@ -10,7 +10,7 @@
     <main class="reward-container">
       <p class="emoji">{{ reward.emoji }}</p>
       <p class="card-text">{{ reward.title }}</p>
-      <Checkbox v-model="reward.collected" />
+      <Checkbox v-model="reward.collected" @click="emit('toggle')" />
     </main>
   </div>
 </template>
@@ -26,6 +26,7 @@ const emit = defineEmits(["update", "delete"]);
 <style scoped>
 .card-container {
   width: auto;
+  min-width: 160px;
 }
 
 .reward-container {
@@ -34,6 +35,10 @@ const emit = defineEmits(["update", "delete"]);
   gap: 12px;
   justify-content: center;
   align-items: center;
+}
+
+.card-text {
+  text-align: center;
 }
 
 header {

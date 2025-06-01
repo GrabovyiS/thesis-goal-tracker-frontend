@@ -27,7 +27,7 @@ export default {
     replaceQuestId(state, { oldId, newId }) {
       const index = state.items.findIndex((q) => q.id === oldId);
 
-      if (index) {
+      if (index !== -1) {
         state.items[index].id = newId;
       }
 

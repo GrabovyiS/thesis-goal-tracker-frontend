@@ -6,40 +6,19 @@
     @close="emit('close')"
   >
     <EditableHeader
-      @update="(newTitle) => (taskCopy.title = newTitle)"
-      :value="taskCopy.title"
+      @update="(newTitle) => (rewardCopy.title = newTitle)"
+      :value="rewardCopy.title"
     />
-    <input type="text" v-model="taskCopy.description" />
-    <div class="files">
-      <FileInput @change="handleFilesChange" />
-      <FileTag
-        v-for="file in taskCopy.files"
-        :file="file"
-        :downloadable="false"
-        :deletable="true"
-        @delete="handleFileDelete"
-      />
-    </div>
-    <div class="switch">
-      <Switch :value="taskCopy.type === 'checkbox'" @change="toggleTaskType" />
-      <p class="text">
-        {{
-          taskCopy.type === "checkbox"
-            ? "Задача с галочкой"
-            : "Задача с количеством выполнений"
-        }}
-      </p>
-    </div>
-    <Transition name="fade">
-      <input type="number" v-if="taskCopy.type === 'progress'" />
-    </Transition>
+    <p class="emoji">{{ rewardCopy.emoji }}</p>
+    <emoji-picker
+      class="emoji-picker dark"
+      @emoji-click="onEmojiClick"
+    ></emoji-picker>
     <div class="buttons">
-      <button class="danger" @click="emit('delete', taskCopy.id)">
+      <button class="danger" @click="emit('delete', rewardCopy.id)">
         Удалить
       </button>
-      <button class="primary" @click="emit('save', taskCopy.value)">
-        Сохранить
-      </button>
+      <button class="primary" @click="saveModal">Сохранить</button>
     </div>
   </Modal>
 </template>
@@ -49,43 +28,34 @@ import { reactive, onMounted, watch, ref, computed } from "vue";
 import { useStore } from "vuex";
 import { toRawDeep } from "../utils/toRawDeep";
 import EditableHeader from "./EditableHeader.vue";
-import FileInput from "./FileInput.vue";
-import FileTag from "./FileTag.vue";
 import Modal from "./Modal.vue";
-import Switch from "./Switch.vue";
+import "emoji-picker-element";
 
 const props = defineProps({
-  task: Object,
+  reward: Object,
   isOpen: Boolean,
 });
 
 const emit = defineEmits(["close", "save", "delete"]);
 const store = useStore();
 
-const taskCopy = ref(null);
+const rewardCopy = ref(null);
+
+const onEmojiClick = (event) => {
+  rewardCopy.value.emoji = event.detail.unicode;
+};
+
+const saveModal = () => {
+  emit("save", toRawDeep(rewardCopy.value));
+  emit("close");
+};
 
 watch(
-  () => props.task,
+  () => props.reward,
   (newTask) => {
-    taskCopy.value = toRawDeep(newTask);
+    rewardCopy.value = toRawDeep(newTask);
   }
 );
-
-const toggleTaskType = () => {
-  if (taskCopy.value.type === "checkbox") {
-    taskCopy.value.type = "progress";
-  } else {
-    taskCopy.value.type = "checkbox";
-  }
-};
-
-const handleFilesChange = (newFiles) => {
-  taskCopy.value.files = newFiles;
-};
-
-const handleFileDelete = (file) => {
-  taskCopy.value.files = taskCopy.value.files.filter((obj) => obj !== file);
-};
 </script>
 
 <style scoped>
@@ -94,6 +64,16 @@ const handleFileDelete = (file) => {
   align-items: center;
   justify-content: start;
   gap: 8px;
+}
+
+.emoji-picker {
+  align-self: center;
+}
+
+.emoji {
+  align-self: center;
+  text-align: center;
+  font-size: 72px;
 }
 
 .text {

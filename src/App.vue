@@ -83,6 +83,27 @@ button.danger {
   }
 }
 
+emoji-picker {
+  --background: var(--color-bg-lighter);
+  --category-button-color: #aaa;
+  --category-button-active-color: var(--color-muted);
+  --category-button-hover-color: #d9d9d930;
+  --search-input-background: var(--color-surface);
+  --search-input-color: #fff;
+  --emoji-size: 1.25rem;
+  --font-family: "Inter", sans-serif;
+  --border-radius: 8px;
+  --border-color: var(--color-border);
+  --input-border-radius: 4px;
+  --input-font-color: var(--color-muted);
+  --input-font-size: 12px;
+  --input-padding: 4px;
+  --category-font-color: var(--color-muted);
+  --input-border-color: var(--color-border);
+  --outline-size: 1px;
+  --outline-color: var(--color-border-focus);
+}
+
 .icon-button {
   background: none;
   border: none;
@@ -222,11 +243,23 @@ input[type="number"] {
   border-radius: 16px;
 
   &.progress {
+    min-height: auto;
     overflow: visible;
   }
 
   .card-container {
     border: 1px solid var(--color-border);
+  }
+
+  .rewards {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 16px;
+
+    .card-container {
+      flex: 1;
+    }
   }
 }
 
@@ -236,6 +269,7 @@ input[type="number"] {
   border-radius: 8px;
   width: 640px;
   max-height: calc(100vh - 40px);
+  overflow: auto;
   display: flex;
   flex-direction: column;
   gap: 16px;

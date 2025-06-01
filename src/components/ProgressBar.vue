@@ -54,6 +54,7 @@ const props = defineProps(["percentage"]);
   }
 
   .progress-bar {
+    transition: width 0.35s ease;
     border-radius: 16px;
     background-color: var(--color-accent-orange);
 

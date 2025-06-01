@@ -34,6 +34,26 @@
     <div class="modal-list progress">
       <ProgressBar :percentage="0" />
     </div>
+    <h3>Награды</h3>
+    <div class="modal-list">
+      <template v-if="rewards.length">
+        <div class="rewards">
+          <RewardCard
+            v-for="reward in rewards"
+            :reward="reward"
+            @update="openRewardModal(reward)"
+            @delete="deleteReward(reward.id)"
+            @toggle="toggleReward(reward)"
+          />
+        </div>
+      </template>
+      <template v-else>
+        <p class="message">
+          Добавьте награды, показывающие ожидаемый результат выполнения квеста.
+        </p>
+        <PlusButton @click="createReward" />
+      </template>
+    </div>
     <div class="buttons">
       <button class="danger" @click="emit('delete', goal.id)">Удалить</button>
       <button class="primary" @click="saveModal">Сохранить</button>
@@ -42,7 +62,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref, watch } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import { useStore } from "vuex";
 import Modal from "./Modal.vue";
 import EditableHeader from "./EditableHeader.vue";
@@ -50,6 +70,7 @@ import { toRawDeep } from "../utils/toRawDeep";
 import LogCard from "./LogCard.vue";
 import QuestCard from "./QuestCard.vue";
 import ProgressBar from "./ProgressBar.vue";
+import RewardCard from "./RewardCard.vue";
 
 const emit = defineEmits(["close", "delete", "save"]);
 const store = useStore();
@@ -75,6 +96,18 @@ const mockLog = {
   updatedAt: "2025-05-23",
 };
 
+const quests = computed(() =>
+  store.getters["quests/questsByGoal"](props.goal.id)
+);
+
+const rewards = computed(() =>
+  quests.value.reduce((acc, currQuest) => {
+    const rewards = store.getters["rewards/rewardsByQuest"](currQuest.id);
+    acc.push(...rewards);
+    return acc;
+  }, [])
+);
+
 const mockQuest = {
   id: "asdf",
   dueDate: "2025-05-23T17:42:15.123Z",
@@ -93,7 +126,6 @@ const getQuestById = (id) => {
 const logs = [];
 
 // get a list of quests that have the same goalId as the current goal
-const quests = [];
 
 const mockGoal = {
   id: "asdf",
