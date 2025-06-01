@@ -134,6 +134,12 @@ button.danger {
   }
 }
 
+.draggable-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
 .column-header {
   margin-bottom: 12px;
 }
@@ -182,6 +188,27 @@ input {
   &:focus {
     outline: none;
     border-color: var(--color-border-focus);
+  }
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  label {
+    font-size: 12px;
+    color: var(--color-muted);
   }
 }
 

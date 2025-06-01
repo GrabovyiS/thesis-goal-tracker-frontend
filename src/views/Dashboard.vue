@@ -62,11 +62,8 @@ const selectedQuestId = computed(() => store.getters["quests/selectedQuestId"]);
 
 onMounted(async () => {
   await store.dispatch("goals/fetchGoals");
-
   await store.dispatch("quests/fetchQuests");
   await store.dispatch("tasks/fetchTasks");
-  console.log(store.getters["quests/allQuests"]);
-  console.log(store.getters["goals/allGoals"]);
   await store.dispatch("activeTasks/fetchActiveTasks");
 });
 </script>

@@ -16,7 +16,7 @@
       />
     </div>
     <div class="switch">
-      <Switch :value="taskCopy.type === 'checkbox'" @change="toggleTaskType" />
+      <Switch :value="taskCopy.type !== 'checkbox'" @change="toggleTaskType" />
       <p class="text">
         {{
           taskCopy.type === "checkbox"
@@ -26,15 +26,16 @@
       </p>
     </div>
     <Transition name="fade">
-      <input type="number" v-if="taskCopy.type === 'progress'" />
+      <div class="input-group" v-if="taskCopy.type === 'progress'">
+        <label for="quantity">Количество выполнений</label>
+        <input id="quantity" type="number" v-model="taskCopy.max" />
+      </div>
     </Transition>
     <div class="buttons">
       <button class="danger" @click="emit('delete', taskCopy.id)">
         Удалить
       </button>
-      <button class="primary" @click="emit('save', taskCopy.value)">
-        Сохранить
-      </button>
+      <button class="primary" @click="handleSave">Сохранить</button>
     </div>
   </Modal>
 </template>
@@ -69,8 +70,11 @@ watch(
 const toggleTaskType = () => {
   if (taskCopy.value.type === "checkbox") {
     taskCopy.value.type = "progress";
+    taskCopy.value.done = false;
   } else {
     taskCopy.value.type = "checkbox";
+    taskCopy.value.value = 0;
+    taskCopy.value.max = 1;
   }
 };
 
@@ -80,6 +84,14 @@ const handleFilesChange = (newFiles) => {
 
 const handleFileDelete = (file) => {
   taskCopy.value.files = taskCopy.value.files.filter((obj) => obj !== file);
+};
+
+const handleSave = () => {
+  emit("save", {
+    files: [...taskCopy.value.files],
+    task: toRawDeep(taskCopy.value),
+  });
+  emit("close");
 };
 </script>
 

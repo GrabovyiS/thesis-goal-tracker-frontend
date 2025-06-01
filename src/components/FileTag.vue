@@ -25,7 +25,11 @@ const downloadFile = () => {
     return;
   }
 
-  store.dispatch("tasks/getFile", file.id);
+  if (!props.file.id) {
+    return;
+  }
+
+  store.dispatch("tasks/getFile", props.file.id);
 };
 </script>
 

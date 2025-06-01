@@ -4,10 +4,14 @@
       <h2>Задачи</h2>
     </div>
     <div class="column-container">
-      <PlusButton @click="" />
-      <TaskCard :task="mockTask1" @update="openModal(mockTask1)" />
-      <TaskCard :task="mockTask2" @update="openModal(element)" />
-      <draggable :list="tasks" group="tasks" item-key="id" :sort="false">
+      <PlusButton @click="createTask" />
+      <draggable
+        :list="tasks"
+        group="tasks"
+        item-key="id"
+        :sort="false"
+        class="draggable-container"
+      >
         <template #item="{ element }">
           <TaskCard
             :task="element"
@@ -15,13 +19,18 @@
             @increase="increase(element)"
             @decrease="decrease(element)"
             @update="openModal(element)"
-            @remove="removeTask(element)"
+            @delete="deleteTask(element)"
           />
         </template>
       </draggable>
     </div>
   </div>
-  <TaskModal :isOpen="modalVisible" :task="modalTask" @close="closeModal" />
+  <TaskModal
+    :isOpen="modalVisible"
+    :task="modalTask"
+    @save="updateTask"
+    @close="closeModal"
+  />
 </template>
 
 <script setup>
@@ -31,6 +40,7 @@ import TaskCard from "./TaskCard.vue";
 import TaskModal from "./TaskModal.vue";
 import draggable from "vuedraggable";
 import PlusButton from "./PlusButton.vue";
+import { toRawDeep } from "../utils/toRawDeep";
 
 const store = useStore();
 const questId = computed(() => store.getters["quests/selectedQuestId"]);
@@ -93,39 +103,41 @@ function openModal(task) {
   modalVisible.value = true;
 }
 
-function closeModal() {
+const closeModal = () => {
   modalVisible.value = false;
-  selectedTask.value = null;
-}
+};
 
-function toggle(task) {
-  store.dispatch("tasks/updateTask", {
-    id: task.id,
-    done: !task.done,
-  });
-}
+const toggle = (task) => {
+  task.done = !task.done;
+  store.dispatch("tasks/updateTask", toRawDeep(task));
+};
 
-function increase(task) {
+const increase = (task) => {
   if (task.value < task.max) {
-    store.dispatch("tasks/updateTask", {
-      id: task.id,
-      value: task.value + 1,
-    });
+    task.value++;
+    store.dispatch("tasks/updateTask", task);
   }
-}
+};
 
-function decrease(task) {
+const decrease = (task) => {
   if (task.value > 0) {
-    store.dispatch("tasks/updateTask", {
-      id: task.id,
-      value: task.value - 1,
-    });
+    task.value--;
+    store.dispatch("tasks/updateTask", task);
   }
-}
+};
 
-function removeTask(task) {
+const createTask = () => {
+  store.dispatch("tasks/createTask", questId.value);
+};
+
+const updateTask = ({ task, files }) => {
+  task.files = files;
+  store.dispatch("tasks/updateTask", task);
+};
+
+const deleteTask = (task) => {
   store.dispatch("tasks/deleteTask", task.id);
-}
+};
 </script>
 
 <style scoped>

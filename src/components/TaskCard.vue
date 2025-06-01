@@ -4,12 +4,7 @@
       <h3>{{ task.title }}</h3>
       <ContextMenu
         :items="['update', 'delete']"
-        @update="
-          () => {
-            console.log('emit update');
-            emit('update');
-          }
-        "
+        @update="emit('update')"
         @delete="emit('delete')"
       />
     </header>
@@ -22,8 +17,8 @@
         <ProgressCounter
           :value="task.value"
           :max="task.max"
-          @minus="emit('increase')"
-          @plus="emit('decrease')"
+          @minus="emit('decrease')"
+          @plus="emit('increase')"
         />
       </template>
 
@@ -33,7 +28,10 @@
     </div>
 
     <button
-      v-if="!task.completed && (task.done || task.value === task.max)"
+      v-if="
+        !task.completed &&
+        (task.type === 'checkbox' ? task.done : task.value === task.max)
+      "
       class="primary"
       @click="emit('complete', quest.id)"
     >

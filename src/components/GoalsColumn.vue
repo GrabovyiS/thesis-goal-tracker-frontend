@@ -57,6 +57,7 @@ const createGoal = () => {
 };
 
 const updateGoal = (newGoal) => {
+  console.log(newGoal);
   store.dispatch("goals/updateGoal", newGoal);
 };
 

@@ -1,8 +1,8 @@
 <template>
   <div class="box">
-    <Minus class="button" size="18" @click="" />
+    <Minus class="button" size="18" @click="emit('minus')" />
     <p>{{ value }}/{{ max }}</p>
-    <Plus class="button" size="18" />
+    <Plus class="button" size="18" @click="emit('plus')" />
   </div>
 </template>
 

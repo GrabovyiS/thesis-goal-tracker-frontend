@@ -31,10 +31,13 @@ export default {
       if (index) {
         state.items[index].id = newId;
       }
+
+      if (state.selectedId === oldId) {
+        state.selectedId = newId;
+      }
     },
 
     updateGoal(state, updated) {
-      console.log(updated);
       const index = state.items.findIndex((g) => g.id === updated.id);
       if (index !== -1) state.items[index] = updated;
     },
@@ -75,7 +78,10 @@ export default {
       commit("updateGoal", goal);
 
       try {
-        const res = await api.put(`/api/goals/${id}`, { title, description });
+        const res = await api.put(`/api/goals/${goal.id}`, {
+          title: goal.title,
+          description: goal.description,
+        });
         commit("updateGoal", res);
       } catch (err) {}
     },

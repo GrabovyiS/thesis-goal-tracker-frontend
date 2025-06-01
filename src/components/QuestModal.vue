@@ -71,7 +71,7 @@ const mockReward = {
   id: "adfszxvc",
   emoji: "🥶",
   title: "Some Reward Title",
-  collected: "no",
+  collected: false,
 };
 
 const questCopy = ref(null);

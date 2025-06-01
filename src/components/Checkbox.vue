@@ -10,9 +10,10 @@ import { Check } from "lucide-vue-next";
 const props = defineProps({
   modelValue: Boolean,
 });
-const emit = defineEmits(["update:modelValue"]);
+const emit = defineEmits(["update:modelValue", "click"]);
 
 function toggle() {
+  emit("click");
   emit("update:modelValue", !props.modelValue);
 }
 </script>

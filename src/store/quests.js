@@ -30,6 +30,10 @@ export default {
       if (index) {
         state.items[index].id = newId;
       }
+
+      if (state.selectedId === oldId) {
+        state.selectedId = newId;
+      }
     },
 
     removeQuest(state, id) {
@@ -71,7 +75,6 @@ export default {
     },
 
     async deleteQuest({ commit }, id) {
-      console.log("deleting", id);
       commit("removeQuest", id);
 
       try {
