@@ -7,6 +7,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@tiptap/starter-kit": "^2.12.0",
+    "@tiptap/vue-3": "^2.12.0",
     "axios": "^1.6.7",
     "emoji-picker-element": "^1.26.3",
     "install": "^0.13.0",

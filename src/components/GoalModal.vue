@@ -55,7 +55,6 @@
       </template>
     </div>
     <div class="buttons">
-      <button class="danger" @click="emit('delete', goal.id)">Удалить</button>
       <button class="primary" @click="saveModal">Сохранить</button>
     </div>
   </Modal>
@@ -77,25 +76,6 @@ const store = useStore();
 
 const props = defineProps(["goal", "isOpen"]);
 
-const mockFile = {
-  id: "...",
-  name: "example.pdf",
-  mimeType: "application/pdf",
-  taskId: "asss",
-  createdAt: "...",
-  updatedAt: "...",
-};
-
-const mockLog = {
-  id: "dszxcv",
-  questId: "asdfdf",
-  title: "Название лога",
-  description:
-    "Текст заметки текст заметки текст заметки текст заметки текст заметки текст заметки текст заметки текстзаметки текстзаметки текстзаметки текст",
-  files: [mockFile],
-  updatedAt: "2025-05-23",
-};
-
 const quests = computed(() =>
   store.getters["quests/questsByGoal"](props.goal.id)
 );
@@ -108,35 +88,19 @@ const rewards = computed(() =>
   }, [])
 );
 
-const mockQuest = {
-  id: "asdf",
-  dueDate: "2025-05-23T17:42:15.123Z",
-  title: "Название квеста",
-  description:
-    "Короткое описание квеста коиорое дает некоторое количество необязательного контекста",
-  percentage: 90,
-  goalId: "asdf",
-};
-
 const getQuestById = (id) => {
-  // return quests.find((q) => q.id === id)
-  return mockQuest;
+  return quests.value.find((q) => q.id === id);
 };
 
-const logs = [];
+const logs = computed(() =>
+  quests.value.reduce((acc, currQuest) => {
+    const logs = store.getters["logs/logsByQuest"](currQuest.id);
+    acc.push(...logs);
+    return acc;
+  }, [])
+);
 
-// get a list of quests that have the same goalId as the current goal
-
-const mockGoal = {
-  id: "asdf",
-  title: "Название цели",
-  description:
-    "Некоторое описание цели с более маленькими буквами которое даёт ненмого контекста",
-  percentage: 90,
-  completed: false,
-};
-
-const goalCopy = ref(mockGoal);
+const goalCopy = ref(null);
 
 watch(
   () => props.goal,

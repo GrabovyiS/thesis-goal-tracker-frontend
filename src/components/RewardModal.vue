@@ -15,9 +15,6 @@
       @emoji-click="onEmojiClick"
     ></emoji-picker>
     <div class="buttons">
-      <button class="danger" @click="emit('delete', rewardCopy.id)">
-        Удалить
-      </button>
       <button class="primary" @click="saveModal">Сохранить</button>
     </div>
   </Modal>

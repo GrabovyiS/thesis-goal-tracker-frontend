@@ -7,6 +7,7 @@
 <script setup>
 import { Plus } from "lucide-vue-next";
 const props = defineProps(["wide"]);
+const emit = defineEmits("click");
 </script>
 
 <style scoped>

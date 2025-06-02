@@ -9,14 +9,9 @@
       @update="(newTitle) => (logCopy.title = newTitle)"
       :value="logCopy.title"
     />
-    <!-- status -->
+    <RichTextEditor v-model="logCopy.description" />
     <div class="buttons">
-      <button class="danger" @click="emit('delete', logCopy.id)">
-        Удалить
-      </button>
-      <button class="primary" @click="emit('save', logCopy.value)">
-        Сохранить
-      </button>
+      <button class="primary" @click="saveModal">Сохранить</button>
     </div>
   </Modal>
 </template>
@@ -26,13 +21,11 @@ import { reactive, onMounted, watch, ref, computed } from "vue";
 import { useStore } from "vuex";
 import { toRawDeep } from "../utils/toRawDeep";
 import EditableHeader from "./EditableHeader.vue";
-import FileInput from "./FileInput.vue";
-import FileTag from "./FileTag.vue";
 import Modal from "./Modal.vue";
-import Switch from "./Switch.vue";
+import RichTextEditor from "./RichTextEditor.vue";
 
 const props = defineProps({
-  task: Object,
+  log: Object,
   isOpen: Boolean,
 });
 
@@ -42,18 +35,15 @@ const store = useStore();
 const logCopy = ref(null);
 
 watch(
-  () => props.task,
-  (newTask) => {
-    logCopy.value = toRawDeep(newTask);
+  () => props.log,
+  (newLog) => {
+    logCopy.value = toRawDeep(newLog);
   }
 );
 
-const handleFilesChange = (newFiles) => {
-  logCopy.value.files = newFiles;
-};
-
-const handleFileDelete = (file) => {
-  logCopy.value.files = logCopy.value.files.filter((obj) => obj !== file);
+const saveModal = () => {
+  emit("save", toRawDeep(logCopy.value));
+  emit("close");
 };
 </script>
 

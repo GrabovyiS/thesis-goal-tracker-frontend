@@ -32,9 +32,6 @@
       </div>
     </Transition>
     <div class="buttons">
-      <button class="danger" @click="emit('delete', taskCopy.id)">
-        Удалить
-      </button>
       <button class="primary" @click="handleSave">Сохранить</button>
     </div>
   </Modal>

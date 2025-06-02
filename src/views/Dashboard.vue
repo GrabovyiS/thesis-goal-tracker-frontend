@@ -66,6 +66,7 @@ onMounted(async () => {
   await store.dispatch("tasks/fetchTasks");
   await store.dispatch("rewards/fetchRewards");
   await store.dispatch("activeTasks/fetchActiveTasks");
+  await store.dispatch("logs/fetchLogs");
 });
 </script>
 

@@ -8,19 +8,20 @@
     <h3>Заметки по квесту</h3>
     <div class="modal-list">
       <template v-if="logs.length">
-        <PlusButton @click="" />
+        <PlusButton @click="createLog" />
         <LogCard
           v-for="log in logs"
           :log="log"
           :quest="questCopy"
-          @delete="deleteLog"
+          @update="openLogModal(log)"
+          @delete="deleteLog(log.id)"
         />
       </template>
       <template v-else>
         <p class="message">
           Ведите историю выполнения квеста, добавляя заметки.
         </p>
-        <PlusButton @click="" />
+        <PlusButton @click="createLog" />
       </template>
     </div>
     <h3>Связанные задачи</h3>
@@ -60,9 +61,6 @@
       <ProgressBar :percentage="progress" />
     </div>
     <div class="buttons">
-      <button class="danger" @click="emit('delete', quest.id)">
-        Удалить квест
-      </button>
       <button class="primary" @click="saveModal">Сохранить</button>
     </div>
     <RewardModal
@@ -70,6 +68,12 @@
       :isOpen="rewardModalOpen"
       @save="updateReward"
       @close="rewardModalOpen = false"
+    />
+    <LogModal
+      :log="modalLog"
+      :isOpen="logModalOpen"
+      @save="updateLog"
+      @close="logModalOpen = false"
     />
   </Modal>
 </template>
@@ -87,13 +91,14 @@ import PlusButton from "./PlusButton.vue";
 import RewardCard from "./RewardCard.vue";
 import RewardModal from "./RewardModal.vue";
 import { getProgressFromTasks } from "../utils/progress";
+import LogModal from "./LogModal.vue";
 
 const emit = defineEmits(["close", "delete", "save"]);
 const store = useStore();
 
 const props = defineProps(["quest", "isOpen"]);
 
-const logs = [];
+const logs = computed(() => store.getters["logs/logsByQuest"](props.quest.id));
 
 const tasks = computed(() =>
   store.getters["tasks/tasksByQuest"](props.quest.id)
@@ -135,6 +140,26 @@ const progress = computed(() => getProgressFromTasks(tasks.value));
 const saveModal = () => {
   emit("save", toRawDeep(questCopy.value));
   emit("close");
+};
+
+const logModalOpen = ref(false);
+const modalLog = ref(null);
+
+const openLogModal = (log) => {
+  logModalOpen.value = true;
+  modalLog.value = log;
+};
+
+const createLog = () => {
+  store.dispatch("logs/createLog", props.quest.id);
+};
+
+const updateLog = (newLog) => {
+  store.dispatch("logs/updateLog", newLog);
+};
+
+const deleteLog = (id) => {
+  store.dispatch("logs/deleteLog", id);
 };
 
 watch(

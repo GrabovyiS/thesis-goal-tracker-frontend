@@ -1,7 +1,7 @@
 <template>
   <div class="card-container">
     <header>
-      <p class="card-text left">{{ formatDateToLong() }}</p>
+      <p class="card-text left">{{ formatDateToLong(log.createdAt) }}</p>
       <p class="card-text quest" @click="emit('quest-click')">
         {{ quest.title }}
       </p>
@@ -12,10 +12,7 @@
       />
     </header>
     <h3>{{ log.title }}</h3>
-    <p class="card-text">{{ log.description }}</p>
-    <div class="file-tags">
-      <FileTag v-for="file in log.files" :file="file" />
-    </div>
+    <p class="richtext-render" v-html="log.description"></p>
   </div>
 </template>
 
@@ -36,14 +33,5 @@ header {
 
 p.left {
   margin-right: auto;
-}
-
-p.quest {
-}
-
-.file-tags {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
 }
 </style>

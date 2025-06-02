@@ -9,6 +9,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  outline: none !important;
 }
 
 html,
@@ -280,7 +281,68 @@ input[type="number"] {
 
   .buttons {
     display: flex;
-    justify-content: space-between;
+    justify-content: end;
+  }
+}
+
+.richtext-render {
+  font-size: 12px;
+  margin-bottom: -12px;
+
+  blockquote {
+    border-left: 3px solid var(--color-muted);
+    margin: 12px 0;
+    padding-left: 8px;
+    font-size: 14px;
+    p {
+      color: white;
+    }
+  }
+
+  hr {
+    border: none;
+    border-top: 1px solid var(--gray-2);
+    margin: 2rem 0;
+  }
+
+  ul,
+  ol {
+    margin: 12px 0;
+    padding: 0 16px;
+
+    li p {
+      margin-top: 2px;
+      margin-bottom: 2px;
+    }
+  }
+
+  code {
+    background-color: rgba(0, 0, 0, 0.15);
+    border-radius: 0.4rem;
+    color: var(--black);
+    font-size: 10px;
+    padding: 0.25em 0.3em;
+  }
+
+  p {
+    margin: 12px 0;
+    color: var(--color-muted);
+  }
+
+  pre {
+    background: var(--black);
+    border-radius: 0.5rem;
+    color: var(--white);
+    font-family: "JetBrainsMono", monospace;
+    margin: 1.5rem 0;
+    padding: 0.75rem 1rem;
+
+    code {
+      background: none;
+      color: inherit;
+      font-size: 0.8rem;
+      padding: 0;
+    }
   }
 }
 </style>
