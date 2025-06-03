@@ -31,6 +31,8 @@ import GoalCard from "./GoalCard.vue";
 import GoalModal from "./GoalModal.vue";
 import PlusButton from "./PlusButton.vue";
 
+const props = defineProps(["searchFilter"]);
+
 const store = useStore();
 const goals = computed(() => store.getters["goals/allGoals"]);
 const selectedGoalId = computed(() => store.getters["goals/selectedGoalId"]);

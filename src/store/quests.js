@@ -86,6 +86,7 @@ export default {
 
     async updateQuest({ commit }, newQuest) {
       const { id, title, description, deadline, goalId } = newQuest;
+      console.log(deadline);
       commit("updateQuest", newQuest);
 
       try {

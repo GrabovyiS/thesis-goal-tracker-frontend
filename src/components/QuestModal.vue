@@ -5,6 +5,15 @@
       :value="questCopy.title"
     />
     <input type="text" v-model="questCopy.description" />
+    <p class="card-text">Выполнить до</p>
+    <VueDatePicker
+      v-model="deadlineComputed"
+      :dark="true"
+      :enable-time-picker="false"
+      :format="'dd.MM.yyyy'"
+      :teleport="true"
+    ></VueDatePicker>
+
     <h3>Заметки по квесту</h3>
     <template v-if="logs.length">
       <div class="modal-list">
@@ -98,6 +107,8 @@ import RewardCard from "./RewardCard.vue";
 import RewardModal from "./RewardModal.vue";
 import { getProgressFromTasks } from "../utils/progress";
 import LogModal from "./LogModal.vue";
+import VueDatePicker from "@vuepic/vue-datepicker";
+import "@vuepic/vue-datepicker/dist/main.css";
 
 const emit = defineEmits(["close", "delete", "save"]);
 const store = useStore();
@@ -174,6 +185,38 @@ watch(
     questCopy.value = toRawDeep(newQuest);
   }
 );
+
+const deadlineComputed = computed({
+  get() {
+    const raw = questCopy.value?.deadline;
+    const date = raw ? new Date(raw) : null;
+    return date;
+  },
+  set(date) {
+    questCopy.value.deadline = date ? date.toISOString().split("T")[0] : null;
+  },
+});
 </script>
 
-<style scoped></style>
+<style>
+.dp__theme_dark {
+  --dp-background-color: var(--color-surface);
+  --dp-text-color: var(--color-muted);
+  --dp-icon-color: var(--color-muted);
+  --dp-hover-color: var(--color-surface);
+  --dp-border-color-hover: var(--color-border);
+  --dp-menu-border-color: var(--color-border);
+  --dp-border-color-focus: var(--color-border-focus);
+  --dp-border-color: var(--color-border);
+  --dp-primary-color: var(--color-accent-blue);
+  --dp-success-color: var(--color-accent-blue);
+  --dp-input-padding: 8px;
+  --dp-input-icon-padding: 32px;
+  --dp-font-family: inherit;
+  --dp-font-size: 12px;
+}
+
+.dp__input_icons {
+  padding: 0px 12px;
+}
+</style>
