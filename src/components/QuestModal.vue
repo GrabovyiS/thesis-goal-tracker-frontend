@@ -6,8 +6,8 @@
     />
     <input type="text" v-model="questCopy.description" />
     <h3>Заметки по квесту</h3>
-    <div class="modal-list">
-      <template v-if="logs.length">
+    <template v-if="logs.length">
+      <div class="modal-list">
         <PlusButton @click="createLog" />
         <LogCard
           v-for="log in logs"
@@ -16,28 +16,32 @@
           @update="openLogModal(log)"
           @delete="deleteLog(log.id)"
         />
-      </template>
-      <template v-else>
+      </div>
+    </template>
+    <template v-else>
+      <div class="modal-list empty">
         <p class="message">
           Ведите историю выполнения квеста, добавляя заметки.
         </p>
         <PlusButton @click="createLog" />
-      </template>
-    </div>
+      </div>
+    </template>
     <h3>Связанные задачи</h3>
-    <div class="modal-list">
-      <template v-if="tasks.length">
-        <TaskCard v-for="task in tasks" :task="task" />
-      </template>
-      <template v-else>
+    <template v-if="tasks.length">
+      <div class="modal-list">
+        <TaskCard v-for="task in tasks" :task="task" :showContext="false" />
+      </div>
+    </template>
+    <template v-else>
+      <div class="modal-list empty">
         <p class="message">
           Разделите квест на более мелкие элементы, добавляя задачи.
         </p>
-      </template>
-    </div>
+      </div>
+    </template>
     <h3>Награды</h3>
-    <div class="modal-list">
-      <template v-if="rewards.length">
+    <template v-if="rewards.length">
+      <div class="modal-list">
         <PlusButton @click="createReward" />
         <div class="rewards">
           <RewardCard
@@ -48,14 +52,16 @@
             @toggle="toggleReward(reward)"
           />
         </div>
-      </template>
-      <template v-else>
+      </div>
+    </template>
+    <template v-else>
+      <div class="modal-list empty">
         <p class="message">
           Добавьте награды, показывающие ожидаемый результат выполнения квеста.
         </p>
         <PlusButton @click="createReward" />
-      </template>
-    </div>
+      </div>
+    </template>
     <h3>Прогресс квеста</h3>
     <div class="modal-list progress">
       <ProgressBar :percentage="progress" />

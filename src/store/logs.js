@@ -42,7 +42,6 @@ export default {
       const id = generateTempId();
       const title = "Новая заметка";
       const description = "Текст заметки";
-      console.log(title, description);
 
       commit("addLog", {
         id,

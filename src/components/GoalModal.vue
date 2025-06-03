@@ -6,23 +6,30 @@
     />
     <input type="text" v-model="goalCopy.description" />
     <h3>История цели</h3>
-    <div class="modal-list">
-      <template v-if="logs.length">
+    <template v-if="logs.length">
+      <div class="modal-list">
         <LogCard
           v-for="log in logs"
           :log="log"
           :quest="getQuestById(log.questId)"
         />
-      </template>
-      <template v-else>
+      </div>
+    </template>
+    <template v-else>
+      <div class="modal-list empty">
         <p class="message">Пока тут ничего нет.</p>
         <p class="message">Ведите историю цели заполняя, заметки по квестам.</p>
-      </template>
-    </div>
+      </div>
+    </template>
+
     <h3>Связанные квесты</h3>
     <div class="modal-list">
       <template v-if="quests.length">
-        <QuestCard v-for="quest in quests" :quest="quest" />
+        <QuestCard
+          v-for="quest in quests"
+          :quest="quest"
+          :showContext="false"
+        />
       </template>
       <template v-else>
         <p class="message">
@@ -32,7 +39,7 @@
     </div>
     <h3>Прогресс цели</h3>
     <div class="modal-list progress">
-      <ProgressBar :percentage="0" />
+      <ProgressBar :percentage="progress" />
     </div>
     <h3>Награды</h3>
     <div class="modal-list">
@@ -44,6 +51,7 @@
             @update="openRewardModal(reward)"
             @delete="deleteReward(reward.id)"
             @toggle="toggleReward(reward)"
+            :showContext="false"
           />
         </div>
       </template>
@@ -70,6 +78,7 @@ import LogCard from "./LogCard.vue";
 import QuestCard from "./QuestCard.vue";
 import ProgressBar from "./ProgressBar.vue";
 import RewardCard from "./RewardCard.vue";
+import { getProgressFromTasks } from "../utils/progress";
 
 const emit = defineEmits(["close", "delete", "save"]);
 const store = useStore();
@@ -79,6 +88,18 @@ const props = defineProps(["goal", "isOpen"]);
 const quests = computed(() =>
   store.getters["quests/questsByGoal"](props.goal.id)
 );
+
+const tasks = computed(() =>
+  quests.value.reduce((acc, currQuest) => {
+    {
+      const tasks = store.getters["tasks/tasksByQuest"](currQuest.id);
+      acc.push(...tasks);
+      return acc;
+    }
+  }, [])
+);
+
+const progress = computed(() => getProgressFromTasks(tasks.value));
 
 const rewards = computed(() =>
   quests.value.reduce((acc, currQuest) => {

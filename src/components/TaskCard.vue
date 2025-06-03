@@ -3,6 +3,7 @@
     <header class="card-header">
       <h3>{{ task.title }}</h3>
       <ContextMenu
+        v-if="showContext"
         :items="['update', 'delete']"
         @update="emit('update')"
         @delete="emit('delete')"
@@ -30,6 +31,7 @@
     <button
       v-if="
         !task.completed &&
+        showContext &&
         (task.type === 'checkbox' ? task.done : task.value === task.max)
       "
       class="primary"
@@ -49,6 +51,12 @@ import Checkbox from "./Checkbox.vue";
 defineProps({
   task: Object,
   removeTooltip: String,
+  showContext: {
+    type: Boolean,
+    default() {
+      return true;
+    },
+  },
 });
 
 const emit = defineEmits([

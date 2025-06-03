@@ -1,6 +1,111 @@
 <template>
   <router-view />
+  <vue-particles
+    id="tsparticles"
+    :options="particlesOptions"
+    class="particles-bg"
+  />
 </template>
+
+<script setup>
+import { ref, computed, onMounted } from "vue";
+
+// RGB color stages: white → orange → blue → white
+const colorStages = [
+  [255, 255, 255], // white
+  [255, 180, 82], // orange
+  [46, 159, 220], // blue
+];
+
+const currentColor = ref([255, 255, 255]);
+let stage = 0;
+let t = 0;
+
+function interpolateColor(c1, c2, t) {
+  return c1.map((v, i) => Math.round(v + (c2[i] - v) * t));
+}
+
+onMounted(() => {
+  setInterval(() => {
+    t += 0.05;
+    if (t >= 1) {
+      t = 0;
+      stage = (stage + 1) % colorStages.length;
+    }
+
+    const nextStage = (stage + 1) % colorStages.length;
+    currentColor.value = interpolateColor(
+      colorStages[stage],
+      colorStages[nextStage],
+      t
+    );
+  }, 100);
+});
+
+const hexColor = computed(() => {
+  const [r, g, b] = currentColor.value;
+  return "#" + [r, g, b].map((v) => v.toString(16).padStart(2, "0")).join("");
+});
+
+const particlesOptions = computed(() => ({
+  background: {
+    color: {
+      value: "#0c0d11",
+    },
+  },
+  fpsLimit: 120,
+  interactivity: {
+    events: {
+      onHover: {
+        enable: true,
+        mode: "repulse",
+      },
+    },
+    modes: {
+      repulse: {
+        distance: 200,
+        duration: 0.4,
+      },
+    },
+  },
+  particles: {
+    color: {
+      value: hexColor.value,
+    },
+    links: {
+      color: hexColor.value,
+      distance: 150,
+      enable: true,
+      opacity: 0.3,
+      width: 1,
+    },
+    move: {
+      direction: "none",
+      enable: true,
+      outModes: "bounce",
+      random: false,
+      speed: 2.5,
+      straight: false,
+    },
+    number: {
+      density: {
+        enable: true,
+      },
+      value: 80,
+    },
+    opacity: {
+      value: 0.5,
+    },
+    shape: {
+      type: "circle",
+    },
+    size: {
+      value: { min: 1, max: 3 },
+    },
+  },
+  detectRetina: true,
+}));
+</script>
 
 <style>
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap");
@@ -12,10 +117,16 @@
   outline: none !important;
 }
 
+.particles-bg {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+}
+
 html,
 body {
   font-family: "Inter", sans-serif;
-  background-color: var(--color-bg);
   color: var(--color-text);
   min-height: 100vh;
   scroll-behavior: smooth;
@@ -240,8 +351,20 @@ input[type="number"] {
   background-color: var(--color-surface);
   padding: 16px;
   gap: 16px;
-  overflow: auto;
+
   border-radius: 16px;
+  max-height: 360px;
+  overflow: auto;
+
+  flex-grow: 1;
+  flex-shrink: 0;
+  flex-basis: auto;
+  min-height: 100px;
+
+  &.empty {
+    min-height: auto;
+    overflow: initial;
+  }
 
   &.progress {
     min-height: auto;
@@ -287,7 +410,6 @@ input[type="number"] {
 
 .richtext-render {
   font-size: 12px;
-  margin-bottom: -12px;
 
   blockquote {
     border-left: 3px solid var(--color-muted);

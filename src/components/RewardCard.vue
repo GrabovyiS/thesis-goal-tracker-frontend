@@ -2,6 +2,7 @@
   <div class="card-container elevate">
     <header>
       <ContextMenu
+        v-if="showContext"
         :items="['update', 'delete']"
         @update="emit('update')"
         @delete="emit('delete')"
@@ -19,7 +20,15 @@
 import Checkbox from "./Checkbox.vue";
 import ContextMenu from "./ContextMenu.vue";
 
-const props = defineProps(["reward"]);
+const props = defineProps({
+  reward: Object,
+  showContext: {
+    type: Boolean,
+    default() {
+      return true;
+    },
+  },
+});
 const emit = defineEmits(["update", "delete"]);
 </script>
 

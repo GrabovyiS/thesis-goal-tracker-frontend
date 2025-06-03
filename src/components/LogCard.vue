@@ -1,5 +1,5 @@
 <template>
-  <div class="card-container">
+  <div class="card-container elevate">
     <header>
       <p class="card-text left">{{ formatDateToLong(log.createdAt) }}</p>
       <p class="card-text quest" @click="emit('quest-click')">

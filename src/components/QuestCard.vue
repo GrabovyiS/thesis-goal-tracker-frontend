@@ -7,6 +7,7 @@
     <header class="card-header">
       <h3>{{ quest.title }}</h3>
       <ContextMenu
+        v-if="showContext"
         :items="['update', 'delete']"
         @update="emit('update')"
         @delete="emit('delete', quest.id)"
@@ -22,7 +23,7 @@
       До {{ formatDateToDDMM(quest.deadline) }}
     </p>
     <button
-      v-if="!quest.completed && progress === 100"
+      v-if="!quest.completed && progress === 100 && showContext"
       class="primary"
       @click="emit('complete', quest.id)"
     >
@@ -42,6 +43,12 @@ import { getProgressFromTasks } from "../utils/progress.js";
 const props = defineProps({
   quest: Object,
   selected: Boolean,
+  showContext: {
+    type: Boolean,
+    default() {
+      return true;
+    },
+  },
 });
 
 const emit = defineEmits(["select", "update", "delete", "complete"]);
