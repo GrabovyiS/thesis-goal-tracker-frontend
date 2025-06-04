@@ -39,6 +39,7 @@ const emit = defineEmits(["update", "delete"]);
 .card-container {
   width: auto;
   min-width: 160px;
+  max-width: 220px;
 }
 
 .reward-container {

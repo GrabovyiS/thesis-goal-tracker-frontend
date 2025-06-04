@@ -5,16 +5,19 @@
       <router-link to="/rewards">Награды</router-link>
       <router-link to="/logs-history">История заметок</router-link>
     </div>
-    <div class="profile"></div>
+    <Profile />
   </nav>
 </template>
 
-<script setup></script>
+<script setup>
+import Profile from "./Profile.vue";
+</script>
 
 <style scoped>
 nav {
   padding: 0px 48px;
   display: flex;
+  justify-content: space-between;
   background-color: var(--color-surface);
 }
 

@@ -12,7 +12,9 @@
 import { ref, computed, onMounted } from "vue";
 import NavBar from "./components/NavBar.vue";
 import { useRoute } from "vue-router";
+import { useStore } from "vuex";
 
+const store = useStore();
 const route = useRoute();
 
 const showNavbar = computed(() => route.path !== "/");
@@ -32,7 +34,7 @@ function interpolateColor(c1, c2, t) {
   return c1.map((v, i) => Math.round(v + (c2[i] - v) * t));
 }
 
-onMounted(() => {
+onMounted(async () => {
   setInterval(() => {
     t += 0.05;
     if (t >= 1) {
@@ -47,6 +49,14 @@ onMounted(() => {
       t
     );
   }, 100);
+
+  await store.dispatch("goals/fetchGoals");
+  await store.dispatch("quests/fetchQuests");
+  await store.dispatch("tasks/fetchTasks");
+  await store.dispatch("rewards/fetchRewards");
+  await store.dispatch("activeTasks/fetchActiveTasks");
+  await store.dispatch("logs/fetchLogs");
+  await store.dispatch("user/fetchUser");
 });
 
 const hexColor = computed(() => {

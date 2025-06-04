@@ -15,23 +15,12 @@
 </template>
 
 <script setup>
-import { onMounted, watch, computed, ref } from "vue";
+import { ref } from "vue";
 import { useStore } from "vuex";
 import GoalsColumn from "../components/GoalsColumn.vue";
 import QuestsColumn from "../components/QuestsColumn.vue";
 import TasksColumn from "../components/TasksColumn.vue";
 import ActiveTasksColumn from "../components/ActiveTasksColumn.vue";
-
-const store = useStore();
-
-onMounted(async () => {
-  await store.dispatch("goals/fetchGoals");
-  await store.dispatch("quests/fetchQuests");
-  await store.dispatch("tasks/fetchTasks");
-  await store.dispatch("rewards/fetchRewards");
-  await store.dispatch("activeTasks/fetchActiveTasks");
-  await store.dispatch("logs/fetchLogs");
-});
 
 const searchFilter = ref("");
 </script>

@@ -11,7 +11,6 @@
 
 <style scoped>
 .landing {
-  background-color: #0c0d11;
   color: #ffffff;
   min-height: 100vh;
   display: flex;

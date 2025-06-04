@@ -6,6 +6,7 @@
         {{ quest.title }}
       </p>
       <ContextMenu
+        v-if="showContext"
         :items="['update', 'delete']"
         @update="emit('update')"
         @delete="emit('delete')"
@@ -21,7 +22,16 @@ import ContextMenu from "./ContextMenu.vue";
 import { formatDateToLong } from "../utils/dates";
 import FileTag from "./FileTag.vue";
 
-const props = defineProps(["log", "quest"]);
+const props = defineProps({
+  log: Object,
+  quest: Object,
+  showContext: {
+    type: Boolean,
+    default() {
+      return true;
+    },
+  },
+});
 const emit = defineEmits(["quest-click", "update", "delete"]);
 </script>
 
