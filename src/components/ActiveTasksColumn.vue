@@ -7,7 +7,7 @@
     <draggable
       group="tasks"
       item-key="id"
-      :list="internalList"
+      :list="searchedInternalList"
       @change="onChange"
       class="column-container"
     >
@@ -24,10 +24,14 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from "vue";
+import { ref, onMounted, watch, computed } from "vue";
 import { useStore } from "vuex";
 import draggable from "vuedraggable";
 import TaskCard from "./TaskCard.vue";
+import { filterObjects } from "../utils/filter";
+import { Pointer } from "lucide-vue-next";
+
+const props = defineProps(["searchFilter"]);
 
 const store = useStore();
 const internalList = ref([]);
@@ -43,6 +47,11 @@ watch(
     internalList.value = [...val];
   }
 );
+
+const searchedInternalList = computed(() => {
+  const list = filterObjects(internalList.value, "title", props.searchFilter);
+  return list;
+});
 
 function onChange(event) {
   if (!event?.to?.children) return;
@@ -83,5 +92,18 @@ function removeTask(task) {
   padding: 16px;
   background-color: var(--color-bg-lighter);
   border-radius: 16px;
+}
+
+.empty-drop-zone {
+  background-color: var(--color-bg-lighter);
+  border: 1px solid var(--color-border);
+  color: var(--color-border);
+  padding: 16px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
 }
 </style>

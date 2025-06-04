@@ -7,6 +7,7 @@
         @update="emit('update')"
         @delete="emit('delete')"
       />
+      <p class="quest" v-if="showQuestName">{{ questName }}</p>
     </header>
     <main class="reward-container">
       <p class="emoji">{{ reward.emoji }}</p>
@@ -28,6 +29,8 @@ const props = defineProps({
       return true;
     },
   },
+  questName: String,
+  showQuestName: Boolean,
 });
 const emit = defineEmits(["update", "delete"]);
 </script>
@@ -48,6 +51,13 @@ const emit = defineEmits(["update", "delete"]);
 
 .card-text {
   text-align: center;
+}
+
+.quest {
+  font-size: 10px;
+  color: var(--color-muted);
+  text-align: right;
+  width: 100%;
 }
 
 header {

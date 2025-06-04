@@ -35,7 +35,7 @@
         (task.type === 'checkbox' ? task.done : task.value === task.max)
       "
       class="primary"
-      @click="emit('complete', quest.id)"
+      @click="emit('complete')"
     >
       Завершить
     </button>
@@ -65,6 +65,7 @@ const emit = defineEmits([
   "increase",
   "decrease",
   "delete",
+  "complete",
 ]);
 </script>
 

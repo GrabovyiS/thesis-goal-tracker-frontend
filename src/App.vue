@@ -1,4 +1,5 @@
 <template>
+  <NavBar v-if="showNavbar" />
   <router-view />
   <vue-particles
     id="tsparticles"
@@ -9,6 +10,12 @@
 
 <script setup>
 import { ref, computed, onMounted } from "vue";
+import NavBar from "./components/NavBar.vue";
+import { useRoute } from "vue-router";
+
+const route = useRoute();
+
+const showNavbar = computed(() => route.path !== "/");
 
 // RGB color stages: white → orange → blue → white
 const colorStages = [
@@ -148,6 +155,7 @@ body {
   --color-border-focus: #9da0a6;
 }
 
+h1,
 h2 {
   color: white;
   font-size: 28px;
@@ -247,12 +255,21 @@ emoji-picker {
   box-shadow: 0 0 16px rgba(0, 0, 0, 0.3);
 }
 
+.column-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .column-container {
   display: flex;
   flex-direction: column;
   gap: 16px;
   padding: 16px;
   border-radius: 16px;
+  max-height: 640px;
+  overflow: auto;
+
   background-color: var(--color-bg-lighter);
 
   .header {

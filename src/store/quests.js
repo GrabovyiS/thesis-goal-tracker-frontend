@@ -43,6 +43,11 @@ export default {
       }
     },
 
+    completeQuest(state, id) {
+      const index = state.items.findIndex((g) => g.id === id);
+      if (index !== -1) state.items[index].completed = true;
+    },
+
     updateQuest(state, updated) {
       const index = state.items.findIndex((q) => q.id === updated.id);
       if (index !== -1) state.items[index] = updated;
@@ -79,6 +84,24 @@ export default {
 
       try {
         await api.delete(`/api/quests/${id}`);
+      } catch (err) {
+        console.error(err);
+      }
+    },
+
+    async completeQuest({ commit }, quest) {
+      const { id, title, description, deadline, goalId, completed } = quest;
+
+      commit("completeQuest", id);
+
+      try {
+        const res = await api.put(`/api/quests/${id}`, {
+          title,
+          description,
+          deadline,
+          goalId,
+          completed: true,
+        });
       } catch (err) {
         console.error(err);
       }

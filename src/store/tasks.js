@@ -26,6 +26,11 @@ export default {
       state.items[index].id = newId;
     },
 
+    completeTask(state, id) {
+      const index = state.items.findIndex((t) => t.id === id);
+      if (index !== -1) state.items[index].completed = true;
+    },
+
     removeTask(state, id) {
       state.items = state.items.filter((t) => t.id !== id);
     },
@@ -75,6 +80,42 @@ export default {
           questId: task.questId,
           type: task.type,
           value: task.value,
+        })
+      );
+
+      for (const file of task.files) {
+        formData.append("files", file);
+      }
+
+      try {
+        const res = await api.put("/api/tasks/" + task.id, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+
+        commit("updateTask", res.data);
+      } catch (err) {
+        console.error(err);
+      }
+    },
+
+    async completeTask({ commit }, task) {
+      commit("completeTask", task.id);
+
+      const formData = new FormData();
+
+      formData.append(
+        "data",
+        JSON.stringify({
+          title: task.title,
+          description: task.description,
+          done: task.done,
+          max: task.max,
+          questId: task.questId,
+          type: task.type,
+          value: task.value,
+          completed: true,
         })
       );
 

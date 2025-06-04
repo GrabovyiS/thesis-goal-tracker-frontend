@@ -2,16 +2,18 @@
   <div>
     <header class="column-header">
       <h2>Цели</h2>
+      <Tabs :tabs="tabs" v-model:selected="selectedTab" />
     </header>
     <div class="column-container">
       <PlusButton :wide="true" @click="createGoal" />
       <GoalCard
-        v-for="goal in goals"
+        v-for="goal in filteredGoals"
         :key="goal.id"
         :goal="goal"
         :selected="goal.id === selectedGoalId"
         @select="select(goal.id)"
         @update="openModal(goal)"
+        @complete="completeGoal(goal)"
         @delete="deleteGoal(goal.id)"
       />
       <GoalModal
@@ -26,16 +28,41 @@
 
 <script setup>
 import { useStore } from "vuex";
-import { computed, ref } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import GoalCard from "./GoalCard.vue";
 import GoalModal from "./GoalModal.vue";
 import PlusButton from "./PlusButton.vue";
+import { filterObjects } from "../utils/filter";
+import Tabs from "./Tabs.vue";
+import { filterByTabs } from "../utils/tabs";
+import { tabs } from "../utils/tabs";
 
 const props = defineProps(["searchFilter"]);
 
+const selectedTab = ref("ongoing");
+
 const store = useStore();
+
 const goals = computed(() => store.getters["goals/allGoals"]);
 const selectedGoalId = computed(() => store.getters["goals/selectedGoalId"]);
+
+const searchedGoals = computed(() =>
+  filterObjects(goals.value, "title", props.searchFilter)
+);
+
+const filteredGoals = computed(() =>
+  filterByTabs(searchedGoals.value, selectedTab.value)
+);
+
+watch(
+  () => filteredGoals.value,
+  (newGoals) => {
+    if (!newGoals.find((g) => g.id === selectedGoalId.value)) {
+      const firstVisibleGoal = newGoals[0];
+      store.commit("goals/setSelectedGoalId", firstVisibleGoal.id);
+    }
+  }
+);
 
 const modalVisible = ref(false);
 
@@ -60,6 +87,10 @@ const createGoal = () => {
 
 const updateGoal = (newGoal) => {
   store.dispatch("goals/updateGoal", newGoal);
+};
+
+const completeGoal = (goal) => {
+  store.dispatch("goals/completeGoal", goal);
 };
 
 const deleteGoal = (id) => {

@@ -1,14 +1,21 @@
 <template>
-  <div class="dashboard">
-    <GoalsColumn />
-    <QuestsColumn />
-    <TasksColumn />
-    <ActiveTasksColumn />
+  <div class="container">
+    <div class="search">
+      <h3>Поиск</h3>
+      <input type="text" v-model="searchFilter" />
+    </div>
+
+    <div class="dashboard">
+      <GoalsColumn :searchFilter />
+      <QuestsColumn :searchFilter />
+      <TasksColumn :searchFilter />
+      <ActiveTasksColumn :searchFilter />
+    </div>
   </div>
 </template>
 
 <script setup>
-import { onMounted, watch, computed } from "vue";
+import { onMounted, watch, computed, ref } from "vue";
 import { useStore } from "vuex";
 import GoalsColumn from "../components/GoalsColumn.vue";
 import QuestsColumn from "../components/QuestsColumn.vue";
@@ -25,13 +32,40 @@ onMounted(async () => {
   await store.dispatch("activeTasks/fetchActiveTasks");
   await store.dispatch("logs/fetchLogs");
 });
+
+const searchFilter = ref("");
 </script>
 
 <style scoped>
 .dashboard {
-  padding: 80px;
+  padding: 48px;
+  padding-top: 36px;
+  padding-bottom: 0;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr;
-  gap: 16px;
+  gap: 32px;
+}
+
+.container {
+  padding-top: 36px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  .search {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 8px;
+    width: 440px;
+
+    h3 {
+      text-align: center;
+    }
+
+    input {
+      width: 100%;
+    }
+  }
 }
 </style>

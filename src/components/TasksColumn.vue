@@ -2,15 +2,17 @@
   <div>
     <div class="column-header">
       <h2>Задачи</h2>
+      <Tabs :tabs="tabs" v-model:selected="selectedTab" />
     </div>
     <div class="column-container">
       <PlusButton @click="createTask" />
       <draggable
-        :list="tasks"
+        :list="filteredTasks"
         group="tasks"
         item-key="id"
         :sort="false"
         class="draggable-container"
+        v-if="searchedTasks.length"
       >
         <template #item="{ element }">
           <TaskCard
@@ -20,6 +22,7 @@
             @decrease="decrease(element)"
             @update="openModal(element)"
             @delete="deleteTask(element)"
+            @complete="completeTask(element)"
           />
         </template>
       </draggable>
@@ -41,6 +44,12 @@ import TaskModal from "./TaskModal.vue";
 import draggable from "vuedraggable";
 import PlusButton from "./PlusButton.vue";
 import { toRawDeep } from "../utils/toRawDeep";
+import { filterObjects } from "../utils/filter";
+import Tabs from "./Tabs.vue";
+import { tabs } from "../utils/tabs";
+import { filterByTabs } from "../utils/tabs";
+
+const props = defineProps(["searchFilter"]);
 
 const store = useStore();
 const questId = computed(() => store.getters["quests/selectedQuestId"]);
@@ -48,52 +57,16 @@ const tasks = computed(() =>
   store.getters["tasks/tasksByQuest"](questId.value)
 );
 
-const mockTask1 = {
-  id: "asdfs",
-  title: "Название задачи",
-  description:
-    "Краткое описание задачи с несколькими словами и маленькими буквами",
-  type: "checkbox",
-  done: true,
-  files: [
-    {
-      id: "...",
-      name: "example.pdf",
-      mimeType: "application/pdf",
-      taskId: "asss",
-      createdAt: "...",
-      updatedAt: "...",
-    },
-  ],
-};
+const searchedTasks = computed(() => {
+  const list = filterObjects(tasks.value, "title", props.searchFilter);
+  return list;
+});
 
-const mockTask2 = {
-  id: "asdfs",
-  title: "Название задачи 2",
-  description:
-    "Краткое описание задачи с несколькими словами и маленькими буквами",
-  type: "progress",
-  value: 0,
-  max: 5,
-  files: [
-    {
-      id: "...",
-      name: "example.pdf",
-      mimeType: "application/pdf",
-      taskId: "asss",
-      createdAt: "...",
-      updatedAt: "...",
-    },
-    {
-      id: "...",
-      name: "example2.jpeg",
-      mimeType: "application/pdf",
-      taskId: "asss",
-      createdAt: "...",
-      updatedAt: "...",
-    },
-  ],
-};
+const selectedTab = ref("ongoing");
+
+const filteredTasks = computed(() =>
+  filterByTabs(tasks.value, selectedTab.value)
+);
 
 const modalVisible = ref(false);
 const modalTask = ref(null);
@@ -133,6 +106,11 @@ const createTask = () => {
 const updateTask = ({ task, files }) => {
   task.files = files;
   store.dispatch("tasks/updateTask", task);
+};
+
+const completeTask = (task) => {
+  console.log(task);
+  store.dispatch("tasks/completeTask", task);
 };
 
 const deleteTask = (task) => {

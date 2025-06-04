@@ -42,6 +42,11 @@ export default {
       if (index !== -1) state.items[index] = updated;
     },
 
+    completeGoal(state, id) {
+      const index = state.items.findIndex((g) => g.id === id);
+      if (index !== -1) state.items[index].completed = true;
+    },
+
     removeGoal(state, id) {
       state.items = state.items.filter((g) => g.id !== id);
       if (state.selectedId === id) {
@@ -72,6 +77,20 @@ export default {
         });
         commit("replaceGoalId", { oldId: id, newId: res.data.id });
       } catch (err) {}
+    },
+
+    async completeGoal({ commit }, goal) {
+      commit("completeGoal", goal.id);
+
+      try {
+        const res = await api.put(`/api/goals/${goal.id}`, {
+          title: goal.title,
+          description: goal.description,
+          completed: true,
+        });
+      } catch (err) {
+        console.error(err);
+      }
     },
 
     async updateGoal({ commit }, goal) {
