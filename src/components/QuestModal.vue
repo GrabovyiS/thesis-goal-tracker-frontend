@@ -19,7 +19,7 @@
       <div class="modal-list">
         <PlusButton @click="createLog" />
         <LogCard
-          v-for="log in logs"
+          v-for="log in sortedLogs"
           :log="log"
           :quest="questCopy"
           @update="openLogModal(log)"
@@ -38,7 +38,11 @@
     <h3>Связанные задачи</h3>
     <template v-if="tasks.length">
       <div class="modal-list">
-        <TaskCard v-for="task in tasks" :task="task" :showContext="false" />
+        <TaskCard
+          v-for="task in sortedTasks"
+          :task="task"
+          :showContext="false"
+        />
       </div>
     </template>
     <template v-else>
@@ -54,7 +58,7 @@
         <PlusButton @click="createReward" />
         <div class="rewards">
           <RewardCard
-            v-for="reward in rewards"
+            v-for="reward in sortedRewards"
             :reward="reward"
             @update="openRewardModal(reward)"
             @delete="deleteReward(reward.id)"
@@ -109,6 +113,7 @@ import { getProgressFromTasks } from "../utils/progress";
 import LogModal from "./LogModal.vue";
 import VueDatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
+import { sortByCreatedAt } from "../utils/sort";
 
 const emit = defineEmits(["close", "delete", "save"]);
 const store = useStore();
@@ -117,9 +122,13 @@ const props = defineProps(["quest", "isOpen"]);
 
 const logs = computed(() => store.getters["logs/logsByQuest"](props.quest.id));
 
+const sortedLogs = computed(() => sortByCreatedAt(logs.value, true));
+
 const tasks = computed(() =>
   store.getters["tasks/tasksByQuest"](props.quest.id)
 );
+
+const sortedTasks = computed(() => sortByCreatedAt(tasks.value, true));
 
 const rewardModalOpen = ref(false);
 const modalReward = ref(null);
@@ -151,6 +160,8 @@ const questCopy = ref(null);
 const rewards = computed(() =>
   store.getters["rewards/rewardsByQuest"](props.quest.id)
 );
+
+const sortedRewards = computed(() => sortByCreatedAt(rewards.value, true));
 
 const progress = computed(() => getProgressFromTasks(tasks.value));
 

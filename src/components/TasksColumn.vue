@@ -7,7 +7,7 @@
     <div class="column-container">
       <PlusButton @click="createTask" />
       <draggable
-        :list="filteredTasks"
+        :list="sortedTasks"
         group="tasks"
         item-key="id"
         :sort="false"
@@ -48,6 +48,7 @@ import { filterObjects } from "../utils/filter";
 import Tabs from "./Tabs.vue";
 import { tabs } from "../utils/tabs";
 import { filterByTabs } from "../utils/tabs";
+import { sortByCreatedAt } from "../utils/sort";
 
 const props = defineProps(["searchFilter"]);
 
@@ -67,6 +68,8 @@ const selectedTab = ref("ongoing");
 const filteredTasks = computed(() =>
   filterByTabs(tasks.value, selectedTab.value)
 );
+
+const sortedTasks = computed(() => sortByCreatedAt(filteredTasks.value, true));
 
 const modalVisible = ref(false);
 const modalTask = ref(null);

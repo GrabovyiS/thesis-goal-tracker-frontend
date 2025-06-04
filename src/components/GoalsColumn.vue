@@ -7,7 +7,7 @@
     <div class="column-container">
       <PlusButton :wide="true" @click="createGoal" />
       <GoalCard
-        v-for="goal in filteredGoals"
+        v-for="goal in sortedGoals"
         :key="goal.id"
         :goal="goal"
         :selected="goal.id === selectedGoalId"
@@ -36,6 +36,7 @@ import { filterObjects } from "../utils/filter";
 import Tabs from "./Tabs.vue";
 import { filterByTabs } from "../utils/tabs";
 import { tabs } from "../utils/tabs";
+import { sortByCreatedAt } from "../utils/sort";
 
 const props = defineProps(["searchFilter"]);
 
@@ -63,6 +64,8 @@ watch(
     }
   }
 );
+
+const sortedGoals = computed(() => sortByCreatedAt(filteredGoals.value, true));
 
 const modalVisible = ref(false);
 

@@ -7,7 +7,7 @@
     <div class="column-container">
       <PlusButton @click="createQuest" :wide="true" />
       <QuestCard
-        v-for="quest in filteredQuests"
+        v-for="quest in sortedQuests"
         :key="quest.id"
         :quest="quest"
         :selected="quest.id === selectedQuestId"
@@ -35,6 +35,7 @@ import PlusButton from "./PlusButton.vue";
 import { filterObjects } from "../utils/filter";
 import Tabs from "./Tabs.vue";
 import { filterByTabs, tabs } from "../utils/tabs";
+import { sortByCreatedAt } from "../utils/sort";
 
 const props = defineProps(["searchFilter"]);
 
@@ -68,6 +69,10 @@ watch(
       store.commit("quests/setSelectedQuestId", firstVisibleQuest.id);
     }
   }
+);
+
+const sortedQuests = computed(() =>
+  sortByCreatedAt(filteredQuests.value, true)
 );
 
 const modalVisible = ref(false);

@@ -26,7 +26,7 @@
     <div class="modal-list">
       <template v-if="quests.length">
         <QuestCard
-          v-for="quest in quests"
+          v-for="quest in sortedQuests"
           :quest="quest"
           :showContext="false"
         />
@@ -46,7 +46,7 @@
       <template v-if="rewards.length">
         <div class="rewards">
           <RewardCard
-            v-for="reward in rewards"
+            v-for="reward in sortedRewards"
             :reward="reward"
             @update="openRewardModal(reward)"
             @delete="deleteReward(reward.id)"
@@ -79,6 +79,7 @@ import QuestCard from "./QuestCard.vue";
 import ProgressBar from "./ProgressBar.vue";
 import RewardCard from "./RewardCard.vue";
 import { getProgressFromTasks } from "../utils/progress";
+import { sortByCreatedAt } from "../utils/sort";
 
 const emit = defineEmits(["close", "delete", "save"]);
 const store = useStore();
@@ -88,6 +89,8 @@ const props = defineProps(["goal", "isOpen"]);
 const quests = computed(() =>
   store.getters["quests/questsByGoal"](props.goal.id)
 );
+
+const sortedQuests = computed(() => sortByCreatedAt(quests.value, true));
 
 const tasks = computed(() =>
   quests.value.reduce((acc, currQuest) => {
@@ -109,6 +112,8 @@ const rewards = computed(() =>
   }, [])
 );
 
+const sortedRewards = computed(() => sortByCreatedAt(rewards.value, true));
+
 const getQuestById = (id) => {
   return quests.value.find((q) => q.id === id);
 };
@@ -120,6 +125,8 @@ const logs = computed(() =>
     return acc;
   }, [])
 );
+
+const sortedLogs = computed(() => sortByCreatedAt(logs.value, true));
 
 const goalCopy = ref(null);
 
