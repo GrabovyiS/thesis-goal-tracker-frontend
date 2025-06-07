@@ -12,6 +12,7 @@
           v-for="log in logs"
           :log="log"
           :quest="getQuestById(log.questId)"
+          :showContext="false"
         />
       </div>
     </template>

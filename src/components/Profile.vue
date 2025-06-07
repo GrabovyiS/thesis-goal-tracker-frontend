@@ -57,7 +57,7 @@ const logout = () => {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 0 4px;
+  padding: 4px;
   border-radius: 100px;
   transition: background-color 0.25s;
   cursor: pointer;

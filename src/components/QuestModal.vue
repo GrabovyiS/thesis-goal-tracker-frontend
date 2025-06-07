@@ -42,6 +42,10 @@
           v-for="task in sortedTasks"
           :task="task"
           :showContext="false"
+          @toggle="toggle(task)"
+          @increase="increase(task)"
+          @decrease="decrease(task)"
+          @complete="completeTask(task)"
         />
       </div>
     </template>
@@ -207,6 +211,35 @@ const deadlineComputed = computed({
     questCopy.value.deadline = date ? date.toISOString().split("T")[0] : null;
   },
 });
+
+const toggle = (task) => {
+  task.done = !task.done;
+  store.dispatch("tasks/updateTask", toRawDeep(task));
+
+  if (task.done) {
+    store.dispatch("notifications/notifyValuePlus");
+  } else {
+    store.dispatch("notifications/notifyValueMinus");
+  }
+};
+
+const increase = (task) => {
+  if (task.value < task.max) {
+    task.value++;
+    store.dispatch("tasks/updateTask", task);
+  }
+};
+
+const decrease = (task) => {
+  if (task.value > 0) {
+    task.value--;
+    store.dispatch("tasks/updateTask", task);
+  }
+};
+
+const completeTask = (task) => {
+  store.dispatch("tasks/completeTask", task);
+};
 </script>
 
 <style>

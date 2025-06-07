@@ -178,6 +178,19 @@ h3 {
   font-weight: 600;
 }
 
+.completed {
+  h3 {
+    color: var(--color-accent-blue);
+  }
+
+  p,
+  p.card-text {
+    color: var(--color-accent-blue);
+  }
+
+  --color-muted: var(--color-accent-blue);
+}
+
 button {
   border: none;
   outline: none;

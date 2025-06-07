@@ -86,6 +86,12 @@ const closeModal = () => {
 const toggle = (task) => {
   task.done = !task.done;
   store.dispatch("tasks/updateTask", toRawDeep(task));
+
+  if (task.done) {
+    store.dispatch("notifications/notifyValuePlus");
+  } else {
+    store.dispatch("notifications/notifyValueMinus");
+  }
 };
 
 const increase = (task) => {
@@ -112,7 +118,6 @@ const updateTask = ({ task, files }) => {
 };
 
 const completeTask = (task) => {
-  console.log(task);
   store.dispatch("tasks/completeTask", task);
 };
 

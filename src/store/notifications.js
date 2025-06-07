@@ -1,36 +1,69 @@
-// store/modules/notification.js
-const state = () => ({
-  queue: [],
-});
-
-const mutations = {
-  addNotification(state, notification) {
-    state.queue.push(notification);
-  },
-  rmeoveNotification(state, id) {
-    state.queue = state.queue.filter((n) => n.id !== id);
-  },
-};
-
-const actions = {
-  notify({ commit }, payload) {
-    const id = Date.now();
-    const notification = { ...payload, id };
-    commit("ADD_NOTIFICATION", notification);
-
-    // Remove after timeout (5s default)
-    setTimeout(() => commit("removeNotification", id), payload.timeout || 5000);
-  },
-
-  playSelectChangeSound({}) {
-    const audio = new Audio("/sounds/change.mp3");
-    audio.play();
-  },
-};
+const successSound = new Audio("/sounds/success.mp3");
+const errorSound = new Audio("/sounds/error.mp3");
+const changeSound = new Audio("/sounds/change.mp3");
+const valueMinusSound = new Audio("/sounds/value-minus.mp3");
+const valuePlusSound = new Audio("/sounds/value-plus.mp3");
 
 export default {
   namespaced: true,
-  state,
-  mutations,
-  actions,
+
+  state: {
+    queue: [],
+  },
+
+  mutations: {
+    addNotification(state, notification) {
+      state.queue.push(notification);
+    },
+
+    removeNotification(state, id) {
+      state.queue = state.queue.filter((n) => n.id !== id);
+    },
+  },
+
+  actions: {
+    notifySuccess({ commit }, payload) {
+      const id = Date.now();
+      const notification = { ...payload, id, type: "success" };
+      commit("addNotification", notification);
+
+      successSound.play();
+
+      setTimeout(
+        () => commit("removeNotification", id),
+        payload.timeout || 4000
+      );
+    },
+
+    notifyError({ commit }, payload) {
+      const id = Date.now();
+      const notification = { ...payload, id, type: "error" };
+      commit("addNotification", notification);
+
+      errorSound.play();
+
+      setTimeout(
+        () => commit("removeNotification", id),
+        payload.timeout || 4000
+      );
+    },
+
+    notifyValuePlus({}) {
+      valuePlusSound.play();
+    },
+
+    notifyValueMinus({}) {
+      valueMinusSound.play();
+    },
+
+    notifySelect({}) {
+      changeSound.play();
+    },
+  },
+
+  getters: {
+    allNotifications: (state) => {
+      return state.queue;
+    },
+  },
 };

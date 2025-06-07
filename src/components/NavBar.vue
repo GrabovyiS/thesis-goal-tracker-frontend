@@ -18,6 +18,7 @@ nav {
   padding: 0px 48px;
   display: flex;
   justify-content: space-between;
+  align-items: center;
   background-color: var(--color-surface);
 }
 

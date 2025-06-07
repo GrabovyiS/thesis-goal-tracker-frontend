@@ -1,5 +1,8 @@
 <template>
-  <div class="card-container elevate">
+  <div
+    class="card-container elevate"
+    :class="task.completed ? 'completed' : ''"
+  >
     <header class="card-header">
       <h3>{{ task.title }}</h3>
       <ContextMenu

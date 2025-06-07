@@ -1,7 +1,7 @@
 <template>
   <div
     class="card-container elevate"
-    :class="{ selected }"
+    :class="[{ selected }, quest.completed ? 'completed' : '']"
     @click="$emit('select')"
   >
     <header class="card-header">

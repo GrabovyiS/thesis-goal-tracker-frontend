@@ -54,6 +54,9 @@ const searchedInternalList = computed(() => {
 });
 
 function onChange(event) {
+  console.log("dripped");
+  console.log(internalList.value);
+
   if (!event?.to?.children) return;
 
   const reordered = Array.from(event.to.children)

@@ -58,9 +58,11 @@ const filteredGoals = computed(() =>
 watch(
   () => filteredGoals.value,
   (newGoals) => {
+    console.log(newGoals);
     if (!newGoals.find((g) => g.id === selectedGoalId.value)) {
       const firstVisibleGoal = newGoals[0];
-      store.commit("goals/setSelectedGoalId", firstVisibleGoal.id);
+      if (firstVisibleGoal)
+        store.commit("goals/setSelectedGoalId", firstVisibleGoal.id);
     }
   }
 );
