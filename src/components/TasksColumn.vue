@@ -105,6 +105,7 @@ const increase = (task) => {
   if (task.value < task.max) {
     task.value++;
     store.dispatch("tasks/updateTask", task);
+    store.dispatch("notifications/notifyValuePlus");
   }
 };
 
@@ -112,6 +113,7 @@ const decrease = (task) => {
   if (task.value > 0) {
     task.value--;
     store.dispatch("tasks/updateTask", task);
+    store.dispatch("notifications/notifyValueMinus");
   }
 };
 

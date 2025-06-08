@@ -1,8 +1,18 @@
-const successSound = new Audio("/sounds/success.mp3");
-const errorSound = new Audio("/sounds/error.mp3");
-const changeSound = new Audio("/sounds/change.mp3");
-const valueMinusSound = new Audio("/sounds/value-minus.mp3");
-const valuePlusSound = new Audio("/sounds/value-plus.mp3");
+const sounds = {
+  success: "/sounds/success.mp3",
+  error: "/sounds/error.mp3",
+  change: "/sounds/change.mp3",
+  valueMinus: "/sounds/value-minus.mp3",
+  valuePlus: "/sounds/value-plus.mp3",
+};
+
+function playSound(src) {
+  const audio = new Audio(src);
+  audio.play().catch((e) => {
+    // Optional: suppress or log errors, e.g. when browser blocks autoplay
+    console.warn("Sound play failed:", e);
+  });
+}
 
 export default {
   namespaced: true,
@@ -27,7 +37,7 @@ export default {
       const notification = { ...payload, id, type: "success" };
       commit("addNotification", notification);
 
-      successSound.play();
+      playSound(sounds.success);
 
       setTimeout(
         () => commit("removeNotification", id),
@@ -40,7 +50,7 @@ export default {
       const notification = { ...payload, id, type: "error" };
       commit("addNotification", notification);
 
-      errorSound.play();
+      playSound(sounds.error);
 
       setTimeout(
         () => commit("removeNotification", id),
@@ -48,22 +58,20 @@ export default {
       );
     },
 
-    notifyValuePlus({}) {
-      valuePlusSound.play();
+    notifyValuePlus() {
+      playSound(sounds.valuePlus);
     },
 
-    notifyValueMinus({}) {
-      valueMinusSound.play();
+    notifyValueMinus() {
+      playSound(sounds.valueMinus);
     },
 
-    notifySelect({}) {
-      changeSound.play();
+    notifySelect() {
+      playSound(sounds.change);
     },
   },
 
   getters: {
-    allNotifications: (state) => {
-      return state.queue;
-    },
+    allNotifications: (state) => state.queue,
   },
 };

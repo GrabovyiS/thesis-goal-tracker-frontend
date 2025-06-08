@@ -71,6 +71,13 @@ watch(
   }
 );
 
+watch(
+  () => selectedQuestId.value,
+  () => {
+    store.dispatch("notifications/notifySelect");
+  }
+);
+
 const sortedQuests = computed(() =>
   sortByCreatedAt(filteredQuests.value, true)
 );

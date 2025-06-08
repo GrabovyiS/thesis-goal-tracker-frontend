@@ -66,6 +66,13 @@ watch(
   }
 );
 
+watch(
+  () => selectedGoalId.value,
+  () => {
+    store.dispatch("notifications/notifySelect");
+  }
+);
+
 const sortedGoals = computed(() => sortByCreatedAt(filteredGoals.value, true));
 
 const modalVisible = ref(false);
