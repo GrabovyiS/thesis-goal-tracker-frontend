@@ -54,7 +54,7 @@ onMounted(async () => {
   await store.dispatch("quests/fetchQuests");
   await store.dispatch("tasks/fetchTasks");
   await store.dispatch("rewards/fetchRewards");
-  await store.dispatch("activeTasks/fetchActiveTasks");
+  await store.dispatch("tasks/fetchActiveTasks");
   await store.dispatch("logs/fetchLogs");
   await store.dispatch("user/fetchUser");
 });
@@ -506,5 +506,22 @@ input[type="number"] {
       padding: 0;
     }
   }
+}
+
+.ghost {
+  opacity: 0.5;
+}
+
+.chosen {
+  transform: scale(1.05);
+}
+
+.drag {
+  /* background-color: var(--color-bg-dark); */
+}
+
+.pointer-events-none {
+  cursor: default;
+  pointer-events: none;
 }
 </style>

@@ -8,6 +8,7 @@
       <ContextMenu
         v-if="showContext"
         :items="['update', 'delete']"
+        :left="activeTask"
         @update="emit('update')"
         @delete="emit('delete')"
       />
@@ -15,15 +16,19 @@
     <p class="card-text">{{ task.description }}</p>
     <div class="interactive-container">
       <template v-if="task.type === 'checkbox'">
-        <Checkbox v-model="task.done" @click="emit('toggle')" />
+        <div :class="task.completed ? 'pointer-events-none' : ''">
+          <Checkbox v-model="task.done" @click="emit('toggle')" />
+        </div>
       </template>
       <template v-else-if="task.type === 'progress'">
-        <ProgressCounter
-          :value="Number(task.value)"
-          :max="task.max"
-          @minus="emit('decrease')"
-          @plus="emit('increase')"
-        />
+        <div :class="task.completed ? 'pointer-events-none' : ''">
+          <ProgressCounter
+            :value="Number(task.value)"
+            :max="task.max"
+            @minus="emit('decrease')"
+            @plus="emit('increase')"
+          />
+        </div>
       </template>
 
       <div class="file-tags">
@@ -54,6 +59,12 @@ import Checkbox from "./Checkbox.vue";
 defineProps({
   task: Object,
   removeTooltip: String,
+  activeTask: {
+    type: Boolean,
+    default() {
+      return false;
+    },
+  },
   showContext: {
     type: Boolean,
     default() {

@@ -43,7 +43,15 @@
 import { ref, onMounted, onBeforeUnmount, nextTick } from "vue";
 import { EllipsisVertical, Trash2, Download, SquarePen } from "lucide-vue-next";
 
-const props = defineProps(["items"]);
+const props = defineProps({
+  items: Array,
+  left: {
+    type: Boolean,
+    default() {
+      return false;
+    },
+  },
+});
 const emit = defineEmits(["delete", "download", "update"]);
 
 const menuOpen = ref(false);
@@ -61,10 +69,12 @@ const toggleMenu = async (e) => {
 
     const menuRect = menu.value.getBoundingClientRect();
 
+    const leftValue = props.left ? buttonRect.left - 132 : buttonRect.right - 6;
+
     menuStyle.value = {
       position: "absolute",
       top: `${buttonRect.bottom - menuRect.height - buttonRect.height + 8}px`,
-      left: `${buttonRect.right - 6}px`,
+      left: `${leftValue}px`,
       zIndex: 9999,
     };
   }

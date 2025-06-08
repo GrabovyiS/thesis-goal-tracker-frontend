@@ -8,10 +8,15 @@
       <PlusButton @click="createTask" />
       <draggable
         :list="sortedTasks"
-        group="tasks"
+        :group="{ name: 'tasks', pull: 'clone', put: 'false' }"
         item-key="id"
         :sort="false"
         class="draggable-container"
+        :animation="250"
+        ghost-class="ghost"
+        chosen-class="chosen"
+        drag-class="drag"
+        :clone="cloneTask"
         v-if="searchedTasks.length"
       >
         <template #item="{ element }">
@@ -49,6 +54,8 @@ import Tabs from "./Tabs.vue";
 import { tabs } from "../utils/tabs";
 import { filterByTabs } from "../utils/tabs";
 import { sortByCreatedAt } from "../utils/sort";
+
+const cloneTask = (t) => ({ ...t });
 
 const props = defineProps(["searchFilter"]);
 

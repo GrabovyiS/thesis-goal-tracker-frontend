@@ -1,10 +1,12 @@
 import api from "../api";
 import { generateTempId } from "../utils/tempId";
+import { toRawDeep } from "../utils/toRawDeep";
 
 export default {
   namespaced: true,
   state: () => ({
     items: [],
+    activeTaskIds: [],
   }),
 
   mutations: {
@@ -34,12 +36,36 @@ export default {
     removeTask(state, id) {
       state.items = state.items.filter((t) => t.id !== id);
     },
+
+    setActiveTasks(state, list) {
+      state.activeTaskIds = list.map((item) => item.taskId);
+    },
+
+    setActiveTaskIds(state, list) {
+      state.activeTaskIds = list;
+    },
+
+    addActiveTask(state, { taskId, position }) {
+      if (!state.activeTaskIds.find((t) => t.id === taskId)) {
+        state.activeTaskIds.splice(position, 0, taskId);
+      }
+    },
+
+    removeActiveTask(state, taskId) {
+      state.activeTaskIds = state.activeTaskIds.filter((id) => id !== taskId);
+    },
   },
 
   actions: {
     async fetchTasks({ commit }) {
       const res = await api.get("/api/tasks");
       commit("setTasks", res.data);
+    },
+
+    async fetchActiveTasks({ commit }) {
+      const res = await api.get("/api/active-tasks");
+
+      commit("setActiveTasks", res.data);
     },
 
     async createTask({ commit }, questId) {
@@ -174,6 +200,34 @@ export default {
         console.error("Ошибка при скачивании файла:", err);
       }
     },
+
+    async addActiveTask({ commit, state }, { taskId, position }) {
+      commit("addActiveTask", { taskId, position });
+
+      try {
+        await api.put("/api/active-tasks", {
+          taskIds: toRawDeep(state.activeTaskIds),
+        });
+      } catch (err) {}
+    },
+
+    async reorderActiveTasks({ commit }, orderedTasks) {
+      commit("setActiveTaskIds", orderedTasks);
+
+      try {
+        await api.put("/api/active-tasks", {
+          taskIds: orderedTasks,
+        });
+      } catch (err) {}
+    },
+
+    async removeActiveTask({ commit }, taskId) {
+      commit("removeActiveTask", taskId);
+
+      try {
+        await api.delete(`/api/active-tasks/${taskId}`);
+      } catch (err) {}
+    },
   },
 
   getters: {
@@ -182,5 +236,12 @@ export default {
     tasksByQuest: (state) => (questId) => {
       return state.items.filter((t) => t.questId === questId);
     },
+
+    activeTaskIds: (state) => state.activeTaskIds,
+
+    allActiveTasks: (state) =>
+      state.activeTaskIds
+        .map((id) => state.items.find((task) => task.id === id))
+        .filter(Boolean),
   },
 };

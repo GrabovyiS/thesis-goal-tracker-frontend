@@ -4,7 +4,6 @@ import goals from "./goals";
 import quests from "./quests";
 import tasks from "./tasks";
 import rewards from "./rewards";
-import activeTasks from "./activeTasks";
 import logs from "./logs";
 import notifications from "./notifications";
 
@@ -16,7 +15,6 @@ export default createStore({
     tasks,
     rewards,
     logs,
-    activeTasks,
     notifications,
   },
 });
