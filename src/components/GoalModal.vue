@@ -138,6 +138,14 @@ watch(
   }
 );
 
+const toggleReward = (reward) => {
+  reward.collected = !reward.collected;
+  if (reward.collected) {
+    store.dispatch("notifications/notifyValuePlus");
+  }
+  store.dispatch("rewards/updateReward", toRawDeep(reward));
+};
+
 const saveModal = () => {
   emit("save", toRawDeep(goalCopy.value));
   emit("close");

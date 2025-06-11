@@ -6,11 +6,13 @@
     :options="particlesOptions"
     class="particles-bg"
   />
+  <NotificationsList />
 </template>
 
 <script setup>
 import { ref, computed, onMounted } from "vue";
 import NavBar from "./components/NavBar.vue";
+import NotificationsList from "./components/NotificationsList.vue";
 import { useRoute } from "vue-router";
 import { useStore } from "vuex";
 

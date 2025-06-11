@@ -47,6 +47,11 @@ export default {
       if (index !== -1) state.items[index].completed = true;
     },
 
+    uncompleteGoal(state, id) {
+      const index = state.items.findIndex((g) => g.id === id);
+      if (index !== -1) state.items[index].completed = false;
+    },
+
     removeGoal(state, id) {
       state.items = state.items.filter((g) => g.id !== id);
       if (state.selectedId === id) {
@@ -79,7 +84,7 @@ export default {
       } catch (err) {}
     },
 
-    async completeGoal({ commit }, goal) {
+    async completeGoal({ commit, dispatch }, goal) {
       commit("completeGoal", goal.id);
 
       try {
@@ -88,8 +93,22 @@ export default {
           description: goal.description,
           completed: true,
         });
+
+        dispatch(
+          "notifications/notifySuccess",
+          {
+            title: "Цель завершена!",
+            message: `Цель ${goal.title} успешна завершена`,
+          },
+          { root: true }
+        );
       } catch (err) {
-        console.error(err);
+        commit("uncompleteGoal", goal.id);
+        dispatch(
+          "notifications/notifyError",
+          { title: "Ошибка!", message: err },
+          { root: true }
+        );
       }
     },
 

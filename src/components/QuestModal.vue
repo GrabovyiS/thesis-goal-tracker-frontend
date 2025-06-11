@@ -152,6 +152,12 @@ const updateReward = (newReward) => {
 
 const toggleReward = (reward) => {
   reward.collected = !reward.collected;
+  if (reward.collected) {
+    store.dispatch("notifications/notifyValuePlus");
+  } else {
+    store.dispatch("notifications/notifyValueMinus");
+  }
+
   store.dispatch("rewards/updateReward", toRawDeep(reward));
 };
 

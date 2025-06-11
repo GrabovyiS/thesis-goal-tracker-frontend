@@ -48,6 +48,11 @@ export default {
       if (index !== -1) state.items[index].completed = true;
     },
 
+    uncompleteQuest(state, id) {
+      const index = state.items.findIndex((g) => g.id === id);
+      if (index !== -1) state.items[index].completed = false;
+    },
+
     updateQuest(state, updated) {
       const index = state.items.findIndex((q) => q.id === updated.id);
       if (index !== -1) state.items[index] = updated;
@@ -89,7 +94,7 @@ export default {
       }
     },
 
-    async completeQuest({ commit }, quest) {
+    async completeQuest({ commit, dispatch }, quest) {
       const { id, title, description, deadline, goalId, completed } = quest;
 
       commit("completeQuest", id);
@@ -102,8 +107,23 @@ export default {
           goalId,
           completed: true,
         });
+
+        dispatch(
+          "notifications/notifySuccess",
+          {
+            title: "Квест завершён!",
+            message: `Квест ${title} успешна завершён`,
+          },
+          { root: true }
+        );
       } catch (err) {
-        console.error(err);
+        commit("uncompleteQuest", id);
+
+        dispatch(
+          "notifications/notifyError",
+          { title: "Ошибка!", message: err },
+          { root: true }
+        );
       }
     },
 

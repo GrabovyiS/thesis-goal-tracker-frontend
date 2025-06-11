@@ -14,6 +14,7 @@
           v-for="reward in sortedRewards"
           :reward="reward"
           :showContext="false"
+          @toggle="toggleReward(reward)"
         />
       </div>
     </div>
@@ -27,6 +28,7 @@ import RewardCard from "../components/RewardCard.vue";
 import Tabs from "../components/Tabs.vue";
 import { sortByCreatedAt } from "../utils/sort";
 import { filterObjects } from "../utils/filter";
+import { toRawDeep } from "../utils/toRawDeep";
 
 const store = useStore();
 
@@ -58,6 +60,17 @@ const tabs = [
 ];
 
 const selectedTab = ref("claimed");
+
+const toggleReward = (reward) => {
+  reward.collected = !reward.collected;
+  if (reward.collected) {
+    store.dispatch("notifications/notifyValuePlus");
+  } else {
+    store.dispatch("notifications/notifyValueMinus");
+  }
+
+  store.dispatch("rewards/updateReward", toRawDeep(reward));
+};
 </script>
 
 <style scoped>

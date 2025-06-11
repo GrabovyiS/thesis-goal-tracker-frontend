@@ -109,8 +109,10 @@ export default {
         })
       );
 
-      for (const file of task.files) {
-        formData.append("files", file);
+      if (task.files) {
+        for (const file of task.files) {
+          formData.append("files", file);
+        }
       }
 
       try {
@@ -126,8 +128,9 @@ export default {
       }
     },
 
-    async completeTask({ commit }, task) {
+    async completeTask({ commit, dispatch }, task) {
       commit("completeTask", task.id);
+      dispatch("notifications/notifyValuePlus", {}, { root: true });
 
       const formData = new FormData();
 
