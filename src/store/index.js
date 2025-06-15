@@ -6,6 +6,7 @@ import tasks from "./tasks";
 import rewards from "./rewards";
 import logs from "./logs";
 import notifications from "./notifications";
+import admin from "./admin";
 
 export default createStore({
   modules: {
@@ -16,5 +17,6 @@ export default createStore({
     rewards,
     logs,
     notifications,
+    admin,
   },
 });

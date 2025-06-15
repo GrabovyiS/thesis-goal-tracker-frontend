@@ -1,5 +1,5 @@
 <template>
-  <Modal :isOpen="isOpen" modalType="Квест" @close="emit('close')">
+  <Modal :isOpen="isOpen" modalType="Задание" @close="emit('close')">
     <EditableHeader
       @update="(newTitle) => (questCopy.title = newTitle)"
       :value="questCopy.title"
@@ -14,7 +14,7 @@
       :teleport="true"
     ></VueDatePicker>
 
-    <h3>Заметки по квесту</h3>
+    <h3>Заметки по заданию</h3>
     <template v-if="logs.length">
       <div class="modal-list">
         <PlusButton @click="createLog" />
@@ -30,7 +30,7 @@
     <template v-else>
       <div class="modal-list empty">
         <p class="message">
-          Ведите историю выполнения квеста, добавляя заметки.
+          Ведите историю выполнения задания, добавляя заметки.
         </p>
         <PlusButton @click="createLog" />
       </div>
@@ -52,7 +52,7 @@
     <template v-else>
       <div class="modal-list empty">
         <p class="message">
-          Разделите квест на более мелкие элементы, добавляя задачи.
+          Разделите задание на более мелкие элементы, добавляя задачи.
         </p>
       </div>
     </template>
@@ -74,12 +74,12 @@
     <template v-else>
       <div class="modal-list empty">
         <p class="message">
-          Добавьте награды, показывающие ожидаемый результат выполнения квеста.
+          Добавьте награды, показывающие ожидаемый результат выполнения задания.
         </p>
         <PlusButton @click="createReward" />
       </div>
     </template>
-    <h3>Прогресс квеста</h3>
+    <h3>Прогресс задания</h3>
     <div class="modal-list progress">
       <ProgressBar :percentage="progress" />
     </div>

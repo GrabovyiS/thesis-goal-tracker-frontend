@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="column-header">
-      <h2>Квесты</h2>
+      <h2>Задания</h2>
       <Tabs :tabs="tabs" v-model:selected="selectedTab" />
     </div>
     <div class="column-container">
