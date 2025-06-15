@@ -1,5 +1,6 @@
 import api from "../api";
 import { generateTempId } from "../utils/tempId";
+import { toRawDeep } from "../utils/toRawDeep";
 
 export default {
   namespaced: true,
@@ -65,8 +66,8 @@ export default {
       commit("setQuests", res.data);
     },
     async createQuest({ commit }, goalId) {
-      const title = "Название квеста";
-      const description = "Дополнительное описание квеста";
+      const title = "Название задания";
+      const description = "Дополнительное описание задания";
       const id = generateTempId();
       const deadline = null;
 
@@ -84,13 +85,20 @@ export default {
       } catch (err) {}
     },
 
-    async deleteQuest({ commit }, id) {
+    async deleteQuest({ commit, state }, id) {
+      const questToDelete = toRawDeep(state.items.find((q) => q.id === id));
       commit("removeQuest", id);
 
       try {
         await api.delete(`/api/quests/${id}`);
       } catch (err) {
-        console.error(err);
+        commit("addQuest", questToDelete);
+
+        dispatch(
+          "notifications/notifyError",
+          { title: "Ошибка!", message: err },
+          { root: true }
+        );
       }
     },
 
@@ -111,8 +119,8 @@ export default {
         dispatch(
           "notifications/notifySuccess",
           {
-            title: "Квест завершён!",
-            message: `Квест ${title} успешна завершён`,
+            title: "Задание завершено!",
+            message: `Задание ${title} успешна завершено`,
           },
           { root: true }
         );

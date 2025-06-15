@@ -6,7 +6,7 @@
   >
     <div class="notification-content">
       <h4 v-if="notification.title">{{ notification.title }}</h4>
-      <p>{{ notification.message }}</p>
+      <p v-if="notification.message">{{ notification.message }}</p>
     </div>
   </div>
 </template>

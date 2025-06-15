@@ -19,11 +19,13 @@
     <template v-else>
       <div class="modal-list empty">
         <p class="message">Пока тут ничего нет.</p>
-        <p class="message">Ведите историю цели заполняя, заметки по квестам.</p>
+        <p class="message">
+          Ведите историю цели заполняя, заметки по заданиям.
+        </p>
       </div>
     </template>
 
-    <h3>Связанные квесты</h3>
+    <h3>Связанные задания</h3>
     <div class="modal-list">
       <template v-if="quests.length">
         <QuestCard
@@ -34,7 +36,7 @@
       </template>
       <template v-else>
         <p class="message">
-          Разделите цель на более мелкие элементы, добавляя квесты.
+          Разделите цель на более мелкие элементы, добавляя задания.
         </p>
       </template>
     </div>
@@ -58,7 +60,7 @@
       </template>
       <template v-else>
         <p class="message">
-          Добавьте награды, показывающие ожидаемый результат выполнения квеста.
+          Добавьте награды, показывающие ожидаемый результат выполнения задания.
         </p>
         <PlusButton @click="createReward" />
       </template>

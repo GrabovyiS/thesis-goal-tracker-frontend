@@ -52,13 +52,16 @@ onMounted(async () => {
     );
   }, 100);
 
-  await store.dispatch("goals/fetchGoals");
-  await store.dispatch("quests/fetchQuests");
-  await store.dispatch("tasks/fetchTasks");
-  await store.dispatch("rewards/fetchRewards");
-  await store.dispatch("tasks/fetchActiveTasks");
-  await store.dispatch("logs/fetchLogs");
-  await store.dispatch("user/fetchUser");
+  const promises = [];
+  promises.push(store.dispatch("goals/fetchGoals"));
+  promises.push(store.dispatch("quests/fetchQuests"));
+  promises.push(store.dispatch("tasks/fetchTasks"));
+  promises.push(store.dispatch("rewards/fetchRewards"));
+  promises.push(store.dispatch("tasks/fetchActiveTasks"));
+  promises.push(store.dispatch("logs/fetchLogs"));
+  promises.push(store.dispatch("user/fetchUser"));
+
+  await Promise.all(promises);
 });
 
 const hexColor = computed(() => {
@@ -347,7 +350,8 @@ emoji-picker {
   box-shadow: 0 0 16px rgba(0, 0, 0, 0.3);
 }
 
-input {
+input,
+select {
   background-color: var(--color-surface);
   color: var(--color-muted);
   padding: 8px;

@@ -1,16 +1,29 @@
 <template>
   <nav>
     <div class="links">
-      <router-link to="/dashboard">Главная</router-link>
-      <router-link to="/rewards">Награды</router-link>
-      <router-link to="/logs-history">История заметок</router-link>
+      <template v-if="user?.role === 'USER' || user?.role === 'SUBSCRIBER'">
+        <router-link to="/dashboard">Главная</router-link>
+      </template>
+      <template v-if="user?.role === 'SUBSCRIBER'">
+        <router-link to="/rewards">Награды</router-link>
+        <router-link to="/logs-history">История заметок</router-link>
+      </template>
+      <template v-if="user?.role === 'ADMIN'">
+        <router-link to="/admin-panel">Панель администратора</router-link>
+      </template>
     </div>
     <Profile />
   </nav>
 </template>
 
 <script setup>
+import { computed } from "vue";
 import Profile from "./Profile.vue";
+import { useStore } from "vuex";
+
+const store = useStore();
+
+const user = computed(() => store.getters["user/user"]);
 </script>
 
 <style scoped>

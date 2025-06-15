@@ -12,6 +12,14 @@
           <LogOut size="16" />
           <p>Выйти</p>
         </button>
+        <button
+          v-if="user?.role === 'USER'"
+          class="menu-item"
+          @click="subscribe"
+        >
+          <UserRoundCheck size="16" />
+          <p>Подписаться</p>
+        </button>
       </div>
     </Transition>
   </div>
@@ -20,7 +28,7 @@
 <script setup>
 import { computed, ref } from "vue";
 import { useStore } from "vuex";
-import { LogOut } from "lucide-vue-next";
+import { LogOut, UserRoundCheck } from "lucide-vue-next";
 import { useRouter } from "vue-router";
 
 const emit = defineEmits(["logout"]);
@@ -49,6 +57,10 @@ const handleClickOutside = (e) => {
 
 const logout = () => {
   store.dispatch("user/logOut");
+};
+
+const subscribe = () => {
+  store.dispatch("user/subscribe");
 };
 </script>
 

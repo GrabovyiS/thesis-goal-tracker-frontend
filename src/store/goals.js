@@ -66,22 +66,45 @@ export default {
       commit("setGoals", res.data);
     },
 
-    async createGoal({ commit }) {
+    async createGoal({ state, commit, dispatch, rootGetters }) {
       const title = "Название цели";
       const description =
         "Некоторое описание цели, которое даёт немного дополнительного контекста";
       const id = generateTempId();
 
-      commit("addGoal", { title, description, id });
+      if (state.items.length <= 2 && rootGetters["user/user"].role === "USER") {
+        dispatch(
+          "notifications/notifyError",
+          {
+            title: "Ошибка создания цели",
+            message: "Подпишитесь, чтобы создавать больше целей",
+          },
+          { root: true }
+        );
+
+        return;
+      }
 
       try {
+        commit("addGoal", { title, description, id });
+
         const res = await api.post("/api/goals", {
           title,
           description,
           id,
         });
         commit("replaceGoalId", { oldId: id, newId: res.data.id });
-      } catch (err) {}
+      } catch (err) {
+        dispatch(
+          "notifications/notifyError",
+          {
+            title: "Ошибка создания цели",
+            message: err,
+          },
+          { root: true }
+        );
+        commit("removeGoal", id);
+      }
     },
 
     async completeGoal({ commit, dispatch }, goal) {
